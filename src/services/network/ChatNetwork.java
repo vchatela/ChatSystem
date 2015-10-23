@@ -25,7 +25,6 @@ public class ChatNetwork {
     
     private ChatNetwork(){
     	try {
-    		
 			senderUDP = new SenderUDP();
 			receiverUDP = new ReceiverUDP();
 		} catch (SocketException e) {

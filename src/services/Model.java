@@ -33,7 +33,6 @@ public class Model {
 		
 		@Override 
 		public boolean equals(Object u2){
-			System.out.println("DEBUG : equals called \n");
 			return (this.nickname==((User)u2).nickname);
 		}
 	}

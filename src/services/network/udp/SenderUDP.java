@@ -31,5 +31,6 @@ public class SenderUDP {
 		oos.flush();
 		byte[] buff= baos.toByteArray();
     	datagramSocket.send(new DatagramPacket(buff, buff.length, addr, ChatNetwork.UDP_PORT));
+        oos.close();
     }
 }

@@ -48,12 +48,12 @@ public class Controller {
     	{
     		case hello:
     			model.addUser(new User(m.getData(), addr));
-				try {
-					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), localUser.getAddr());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), localUser.getAddr());
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
     			break;
     			
     		case helloAck:
