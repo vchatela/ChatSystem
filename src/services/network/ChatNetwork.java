@@ -49,18 +49,12 @@ public class ChatNetwork {
 		}
     }
     
-    public void sendHello(String nickname)
-    {
+    public void sendHello(String nickname) throws IOException {
     	Message m = Message.createHello(nickname);
-    	try {
-    		for(InetAddress addr : getBroadList())
-    		{
-    			senderUDP.send(m, addr);
-    		}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        for(InetAddress addr : getBroadList())
+        {
+            senderUDP.send(m, addr);
+        }
     }
    
     public void processUDPPacket(DatagramPacket p)

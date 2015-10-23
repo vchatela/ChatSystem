@@ -1,6 +1,8 @@
 import services.*;
 import services.network.ChatNetwork;
 
+import java.io.IOException;
+
 
 public class main {
 
@@ -10,7 +12,11 @@ public class main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Controller c = Controller.getInstance();
-		ChatNetwork.getInstance().sendHello("Lucas :)");
+		try {
+			ChatNetwork.getInstance().sendHello("Lucas :)");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
