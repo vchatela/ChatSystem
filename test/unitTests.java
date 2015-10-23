@@ -1,6 +1,3 @@
-import junit.extensions.TestSetup;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.junit.Test;
 import services.Controller;
 import services.network.ChatNetwork;
@@ -42,6 +39,11 @@ public class unitTests {
 
     @Test
     public final void exchangeMessage() {
+
+    }
+
+    @Test
+    public final void addUser(){
 
     }
 }
