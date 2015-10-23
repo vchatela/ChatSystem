@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class Message implements Serializable {
 
-    private static enum header_type{
+    public static enum header_type{
         hello, helloAck, bye, message
     }
 

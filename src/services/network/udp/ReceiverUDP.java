@@ -14,7 +14,7 @@ import services.network.ChatNetwork;
  * Created by ValentinC on 22/10/2015.
  */
 public class ReceiverUDP extends Thread {
-	private static final int DATA_MAX_LENGTH = 1500*8;
+	private static final int DATA_MAX_LENGTH = 1500;
 	
     private DatagramSocket datagramSocket;
     private byte[] inData;

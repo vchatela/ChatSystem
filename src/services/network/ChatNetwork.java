@@ -49,18 +49,20 @@ public class ChatNetwork {
 		}
     }
     
-    public void sendHello(String nickname)
+    public void sendHello(String nickname) throws IOException
     {
     	Message m = Message.createHello(nickname);
-    	try {
-    		for(InetAddress addr : getBroadList())
-    		{
-    			senderUDP.send(m, addr);
-    		}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for(InetAddress addr : getBroadList())
+		{
+			senderUDP.send(m, addr);
 		}
+    }
+    
+    public void sendHelloAck(String nickname, InetAddress addr) throws IOException
+    {
+    	Message m = Message.createHelloAck(nickname);
+		senderUDP.send(m, addr);
+
     }
    
     public void processUDPPacket(DatagramPacket p)
@@ -68,7 +70,7 @@ public class ChatNetwork {
 	    try {
 	    	ByteArrayInputStream baos = new ByteArrayInputStream(p.getData());
 		    ObjectInputStream oos = new ObjectInputStream(baos);
-			Controller.getInstance().processMessage((Message)oos.readObject());
+			Controller.getInstance().processMessage((Message)oos.readObject(), p.getAddress());
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

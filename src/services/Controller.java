@@ -1,4 +1,12 @@
 package services;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import services.Model.User;
+import services.network.ChatNetwork;
+
 /**
  * Created by ValentinC on 21/10/2015.
  *
@@ -15,11 +23,19 @@ public class Controller {
     private String inMessage;
     private String outMessage;
     private int State;*/
-    
+	
+	private Model model;
+    private User localUser;
     private static Controller instance = new Controller();
 
     private Controller(){
-
+    	model = new Model();
+    }
+    
+    public void Connect(String nickname) throws UnknownHostException
+    {
+    	//TODO
+		localUser = new User((nickname + " @" +InetAddress.getLocalHost().getHostName()), InetAddress.getLocalHost());
     }
     
     public static Controller getInstance()
@@ -27,7 +43,32 @@ public class Controller {
     	return instance;
     }
     
-    public void processMessage(Message m){
+    public void processMessage(Message m, InetAddress addr){
+    	switch (m.getHeader())
+    	{
+    		case hello:
+    			model.addUser(new User(m.getData(), addr));
+				try {
+					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), localUser.getAddr());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			break;
+    			
+    		case helloAck:
+    			model.addUser(new User(m.getData(), addr));
+    			break;
+    			
+    		case message:
+    			System.out.println(m.getData());
+    			break;
+    			
+			case bye:
+				//TODO delete user
+				break;
+    			
+    	}
     	System.out.println(m.getData());
     }
     
