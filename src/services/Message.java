@@ -20,7 +20,15 @@ public class Message implements Serializable {
         this.data = message;
     }
 
-    private Message(header_type header){
+    public header_type getHeader() {
+		return header;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	private Message(header_type header){
         this.header=header;
         this.data = null;
     }
@@ -40,4 +48,6 @@ public class Message implements Serializable {
     public static Message createMessage(String message){
         return new Message(header_type.message,message);
     }
+    
+    
 }

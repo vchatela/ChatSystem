@@ -19,29 +19,22 @@ public class ReceiverUDP extends Thread {
     private DatagramSocket datagramSocket;
     private byte[] inData;
     
-    private boolean running;
-    
     public ReceiverUDP() throws SocketException
     {
-    	datagramSocket = new DatagramSocket();
+    	datagramSocket = new DatagramSocket(ChatNetwork.UDP_PORT);
     	datagramSocket.setBroadcast(true);
     	inData = new byte[DATA_MAX_LENGTH];
-    	running = true;
+    	this.start();
     }
 
     public void run(){
-    	while (running)
+    	while (true)
     	{
         	try {
-    			datagramSocket.receive(new DatagramPacket(inData, DATA_MAX_LENGTH));
-    			ByteArrayInputStream baos = new ByteArrayInputStream(inData);
-    		    ObjectInputStream oos = new ObjectInputStream(baos);
-    			try {
-					ChatNetwork.getInstance().processUDPPacket((Message)oos.readObject());
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+        		DatagramPacket p = new DatagramPacket(inData, DATA_MAX_LENGTH);
+    			datagramSocket.receive(p);
+    			ChatNetwork.getInstance().processUDPPacket(p);
+    			
     		} catch (IOException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();

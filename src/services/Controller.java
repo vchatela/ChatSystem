@@ -5,7 +5,7 @@ package services;
  */
 public class Controller {
 
-    public static final int USERVIEW_CLI = 0;
+    /*public static final int USERVIEW_CLI = 0;
     public static final int USERVIEW_GUI = 1;
     public static final int STATE_ACTIVATED = 1;
     public static final int STATE_DESACTIVATED = 0;
@@ -14,16 +14,21 @@ public class Controller {
 
     private String inMessage;
     private String outMessage;
-    private int State;
+    private int State;*/
+    
+    private static Controller instance = new Controller();
 
-    public Controller(){
+    private Controller(){
 
     }
-
-    public static void main (String args[]){
-        //new CommunicaApp(USERVIEW_GUI, TCP_PROTOCOL_SERVER,12700, "127.0.0.1",0);
-        //new CommunicaApp(USERVIEW_GUI, TCP_PROTOCOL_SERVER,12700, "127.0.0.1",0);
-        //new CommunicaApp(USERVIEW_GUI, UDP_PROTOCOL_SERVER,12700, "127.0.0.1",0);
-        //new CommunicaApp(USERVIEW_GUI, UDP_PROTOCOL_SERVER,12700, "127.0.0.1",0);
+    
+    public static Controller getInstance()
+    {
+    	return instance;
     }
+    
+    public void processMessage(Message m){
+    	System.out.println(m.getData());
+    }
+    
 }

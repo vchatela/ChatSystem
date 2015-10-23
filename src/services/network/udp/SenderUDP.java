@@ -9,13 +9,13 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import services.Message;
+import services.network.ChatNetwork;
 
 /**
  * Created by ValentinC on 22/10/2015.
  */
 public class SenderUDP {
     private DatagramSocket datagramSocket;
-    private static final int UDP_PORT = 9738;
     
     public SenderUDP() throws SocketException
     {
@@ -30,6 +30,6 @@ public class SenderUDP {
 		oos.writeObject(mess);
 		oos.flush();
 		byte[] buff= baos.toByteArray();
-    	datagramSocket.send(new DatagramPacket(buff, buff.length, addr, UDP_PORT));
+    	datagramSocket.send(new DatagramPacket(buff, buff.length, addr, ChatNetwork.UDP_PORT));
     }
 }
