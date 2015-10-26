@@ -1,5 +1,6 @@
 package services.network.tcp;
 
+import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 
@@ -24,6 +25,26 @@ public class ReceiverTCP extends Thread {
     }
 
     public void run(){
+        File directory = new File("/"); // TODO
+        OutputStream os = null;
+        while(true){
+            try {
+                os = new BufferedOutputStream(new FileOutputStream(new File(directory,clientSocket.getRemoteSocketAddress() + "-" + clientSocket.getPort())));
+                os.flush();
+            } catch (FileNotFoundException e) {
+                //TODO
+                e.printStackTrace();
+            } catch (IOException e) {
+                //TODO
+                e.printStackTrace();
+            } finally {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 }

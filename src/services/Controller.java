@@ -54,7 +54,10 @@ public class Controller {
     }
     
     public void processMessage(Message m, InetAddress addr){
-        //TODO manage localhost later
+        //TODO manage localhost later - if one addr == one of localhost addr
+        // if (addr == InetAddress.getLocalhost()
+        //        return;
+        //
     	switch (m.getHeader())
     	{
     		case hello:
