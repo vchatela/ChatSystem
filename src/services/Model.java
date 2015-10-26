@@ -38,6 +38,10 @@ public class Model {
 	}
 	
 	private Vector<User> userList;
+
+    public int getUserListSize(){
+        return userList.size();
+    }
 	
     public Model(){
     	userList = new Vector<User>();
@@ -45,6 +49,7 @@ public class Model {
     
     public void addUser(User u)
     {
+        //TODO : check if it's working
     	if (!userList.contains(u))
     			userList.add(u);
     }

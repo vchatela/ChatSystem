@@ -28,6 +28,10 @@ public class Controller {
     private User localUser;
     private static Controller instance = new Controller();
 
+    public int getNbrUser(){
+        return model.getUserListSize();
+    }
+
     private Controller(){
     	model = new Model();
         try {

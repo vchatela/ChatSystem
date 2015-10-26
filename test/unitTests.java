@@ -28,7 +28,18 @@ public class unitTests {
 
     @Test
     public final void receiveHello(){
-
+        int i = Controller.getInstance().getNbrUser();
+        try {
+            ChatNetwork.getInstance().sendHello("Lucas :)");
+        } catch (IOException e) {
+            //error what TODO
+        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assert i + 1 ==Controller.getInstance().getNbrUser(); // TODO : check in local
     }
 
     @Test
