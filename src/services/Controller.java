@@ -30,6 +30,12 @@ public class Controller {
 
     private Controller(){
     	model = new Model();
+        try {
+            Connect("ValentinDeBase");
+        } catch (UnknownHostException e) {
+            //TODO
+            e.printStackTrace();
+        }
     }
     
     public void Connect(String nickname) throws UnknownHostException
@@ -48,12 +54,12 @@ public class Controller {
     	{
     		case hello:
     			model.addUser(new User(m.getData(), addr));
-//				try {
-//					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), localUser.getAddr());
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+                try {
+					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), localUser.getAddr()); // TODO localUser at NULL
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
     			break;
     			
     		case helloAck:

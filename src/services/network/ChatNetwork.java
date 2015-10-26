@@ -29,7 +29,7 @@ public class ChatNetwork {
 			receiverUDP = new ReceiverUDP();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error : " + e.toString());
 		}
 
     }
