@@ -14,7 +14,7 @@ public class main {
 		// TODO Auto-generated method stub
 		Controller c = Controller.getInstance();
 		try {
-			ChatNetwork.getInstance().sendHello("Lucas");
+			ChatNetdwork.getInstance().sendHello("Lucas");
 			ChatNetwork.getInstance().sendString("Moi c'est Valentin, ca va bien ?", InetAddress.getLocalHost());
             ChatNetwork.getInstance().sendBye();
 		} catch (IOException e) {
