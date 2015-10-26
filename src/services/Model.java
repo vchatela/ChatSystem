@@ -45,9 +45,20 @@ public class Model {
     
     public void addUser(User u)
     {
-    	//TODO avoid duplicata
     	if (!userList.contains(u))
     			userList.add(u);
     }
+	public void removeUser(InetAddress addr)
+	{
+		int i = 0;
+		boolean found = false;
+		while(i<userList.size() && !found ){
+			if(userList.get(i).addr.equals(addr)){
+				userList.remove(i);
+                found = true;
+			}
+		}
+	}
+
 
 }

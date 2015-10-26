@@ -63,6 +63,15 @@ public class ChatNetwork {
 		senderUDP.send(m, addr);
 
     }
+
+    public void sendBye() throws IOException
+    {
+        Message m = Message.createBye();
+        for(InetAddress addr : getBroadList())
+        {
+            senderUDP.send(m, addr);
+        }
+    }
    
     public void processUDPPacket(DatagramPacket p)
     {
