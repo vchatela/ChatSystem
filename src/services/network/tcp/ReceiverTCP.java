@@ -11,12 +11,16 @@ public class ReceiverTCP extends Thread {
     private Socket clientSocket;
     private static HashMap<Integer,ReceiverTCP> instances = new HashMap<>();
 
-    private ReceiverTCP() {
-        instances.put(instances.size(),this);
+    private ReceiverTCP(int key) {
+        instances.put(key,this);
     }
 
-    public static ReceiverTCP getInstance(int which){
-        return instances.get(which);
+    public static ReceiverTCP getInstance(int key){
+        ReceiverTCP instance = instances.get(key);
+        if (instance == null)
+            instance = new ReceiverTCP(key);
+
+        return instance;
     }
 
 

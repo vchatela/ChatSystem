@@ -7,63 +7,135 @@ import java.util.Vector;
  * Created by ValentinC on 21/10/2015.
  */
 public class Model {
-	
+
+	//Classes
 	public static class User{
 		private String nickname;
 		private InetAddress addr;
-		
+		private boolean connected;
+
+		public boolean isConnected() {
+			return connected;
+		}
+		public void setConnected(boolean connected) {
+			this.connected = connected;
+		}
 		public String getNickname() {
 			return nickname;
 		}
-
 		public InetAddress getAddr() {
 			return addr;
 		}
-		
 		public User(String nickname, InetAddress addr)
 		{
 			this.nickname = nickname;
 			this.addr = addr;
+			connected = true;
 		}
 		
-		public String toString()
-		{
+		public String toString() {
 			return nickname +  " @" + addr;
 		}
 		
 		@Override 
 		public boolean equals(Object u2){
-			return (this.nickname==((User)u2).nickname);
+			return ((this.nickname).equals(((User)u2).getNickname()));
 		}
 	}
-	
-	private Vector<User> userList;
 
+	public static abstract class Msg{
+		private User sender;
+		public Msg(User sender){
+			this.sender = sender;
+		}
+		public User getSender() {
+			return sender;
+		}
+		public String toString(){
+			String header;
+			if (getSender().equals(Controller.getInstance().getLocalUser()))
+				header = new String("You: ");
+			else
+				header = new String(getSender().getNickname() + ": ");
+			return header;
+		}
+	};
+	public static class Text extends Msg{
+		private String text;
+		public Text(String text, User sender) {
+			super(sender);
+			this.text=text;
+		}
+		public String toString() {
+			return (super.toString() + text);
+		}
+		public String getText() {
+			return text;
+		}
+	}
+
+
+	//Attributes
+	private Vector<User> userList;
+	private Vector<Vector<Msg>> conversations;
+
+
+	//Functions
     public int getUserListSize(){
         return userList.size();
     }
 	
     public Model(){
     	userList = new Vector<User>();
+		conversations = new Vector<Vector<Msg>>();
     }
     
     public void addUser(User u)
     {
         //TODO : check if it's working
     	if (!userList.contains(u))
-    			userList.add(u);
+		{
+			userList.add(u);
+			conversations.add(new Vector<Msg>());
+		}
     }
-	public void removeUser(InetAddress addr)
+	public void remoteUserDisconnect(InetAddress addr)
 	{
 		int i = 0;
 		boolean found = false;
 		while(i<userList.size() && !found ){
 			if(userList.get(i).addr.equals(addr)){
-				userList.remove(i);
+				userList.elementAt(i).setConnected(false);
                 found = true;
 			}
 		}
 	}
 
+	public Vector<User> getUserList()
+	{
+		return userList;
+	}
+	public Vector<Vector<Msg>> getConversations()
+	{
+		return conversations;
+	}
+
+	public User findUser(InetAddress addr)
+	{
+		boolean found = false;
+		User u = null;
+		int i=0;
+
+		while(i<userList.size() && (!found))
+		{
+			if (userList.elementAt(i).getAddr().equals(addr))
+			{
+				u = userList.elementAt(i);
+				found = true;
+			}
+			i++;
+		}
+		return u;
+	}
 
 }
