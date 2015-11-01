@@ -83,6 +83,16 @@ public class Controller {
         conversation.add (new Model.FileMsg(f, localUser, key));
         model.setConversationNeedUpdate(true);
     }
+
+    public void processPermissionForFileTransfer(int key, InetAddress addr) {
+        //Updating the model
+        int index = model.getUserList().indexOf(model.findUser(addr));
+        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+        conversation.add (new Model.FileMsg(null, localUser, key));
+        model.setConversationNeedUpdate(true);
+
+
+    }
     
     public void processMessage(Message m, InetAddress addr){
         //On vérifie que l'on soit connecté

@@ -28,7 +28,7 @@ public class ServerTCP extends Thread {
             try {
                 socketClient = serverSocket.accept();
                 System.out.println("New TCP connexion: "+socketClient.getInetAddress());
-                //TODO
+                ChatNetwork.getInstance().newTCPConnection(socketClient);
             } catch (IOException e) {
                 e.printStackTrace();
             }

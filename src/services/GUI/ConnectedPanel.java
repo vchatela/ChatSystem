@@ -3,6 +3,7 @@ package services.GUI;
 import javafx.stage.FileChooser;
 import services.Controller;
 import services.Model;
+import services.network.ChatNetwork;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,12 +61,18 @@ public class ConnectedPanel extends Panel implements ActionListener{
 
         constraints.gridx=0;
         constraints.gridy=0;
+        constraints.ipady=20;
+        constraints.ipadx=400;
         add(userListChoice, constraints);
         constraints.gridx=1;
         constraints.gridy=0;
+        constraints.ipady=0;
+        constraints.ipadx=0;
         add(selectUserButton, constraints);
-        constraints.gridx=2;
-        constraints.gridy=0;
+        constraints.gridx=1;
+        constraints.gridy=1;
+        constraints.ipady=20;
+        constraints.ipadx=200;
         add(selectedUser, constraints);
         constraints.gridx=1;
         constraints.gridy=2;
@@ -122,8 +129,6 @@ public class ConnectedPanel extends Panel implements ActionListener{
             else
             {
                 Controller.getInstance().sendText(toSendTextField.getText(), selectedRemoteUser);
-                /*Model.TextMsg t = new Model.TextMsg(toSendTextField.getText(), selectedRemoteUser);
-                Controller.getInstance().sendMessage(t);*/
                 toSendTextField.setText("");
             }
         }
@@ -176,7 +181,13 @@ public class ConnectedPanel extends Panel implements ActionListener{
         String s = "";
         for (Model.Msg m : conversation)
         {
-            s = s + m + System.lineSeparator();
+            if (m.getClass()==Model.TextMsg.class) {
+                s = s + m + System.lineSeparator();
+            }
+            else if(m.getClass()==Model.FileMsg.class) {
+                s= s+"Oui a file :D\n";
+
+            }
         }
         conversationTextField.setText(s);
     }

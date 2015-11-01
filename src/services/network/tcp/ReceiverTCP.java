@@ -29,7 +29,7 @@ public class ReceiverTCP extends Thread {
     }
 
     public void run(){
-        File directory = new File("/"); // TODO
+        /*File directory = new File("/"); // TODO
         OutputStream os = null;
         while(true){
             try {
@@ -48,7 +48,7 @@ public class ReceiverTCP extends Thread {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
 
     }
 }

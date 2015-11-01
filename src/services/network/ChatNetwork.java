@@ -10,6 +10,7 @@ import java.util.Enumeration;
 
 import services.Controller;
 import services.Message;
+import services.network.tcp.ReceiverTCP;
 import services.network.tcp.SenderTCP;
 import services.network.tcp.ServerTCP;
 import services.network.udp.ReceiverUDP;
@@ -52,9 +53,13 @@ public class ChatNetwork {
         return hashcodeTCP-1;
     }
 
-    public void newTCPConnection ()
+    public void newTCPConnection (Socket socket)
     {
+        ReceiverTCP receiver = ReceiverTCP.getInstance(hashcodeTCP);
+        receiver.start();
+        Controller.getInstance().processPermissionForFileTransfer(hashcodeTCP, socket.getInetAddress());
 
+        hashcodeTCP++;
     }
 
 
