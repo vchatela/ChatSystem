@@ -14,17 +14,24 @@ public class ServerTCP extends Thread {
     private ServerSocket serverSocket;
 
     public ServerTCP() {
-
+        try {
+            serverSocket = new ServerSocket(ChatNetwork.TCP_SERVER_PORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
         Socket socketClient = null;
-        try {
-            socketClient = serverSocket.accept();
-            System.out.println("Connexion avec : "+socketClient.getInetAddress());
-            ChatNetwork.getInstance();
-        } catch (IOException e) {
-            e.printStackTrace();
+        while(true)
+        {
+            try {
+                socketClient = serverSocket.accept();
+                System.out.println("New TCP connexion: "+socketClient.getInetAddress());
+                //TODO
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package services;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -60,26 +61,27 @@ public class Controller {
         return instance.model;
     }
 
-    public void sendMessage (Model.Msg message) {
-        //Sending a text or a file ?
-        if (message.getClass()==Model.Text.class) {
-            //Text
+    public void sendText(String text, User receiver){
+        //Sending the message
+        System.out.println("Sending \"" + (text + "\" to user : " + receiver.getNickname()));
+        ChatNetwork.getInstance().sendString(text, receiver.getAddr());
 
-            //Sending the message
-            System.out.println("Sending \"" + ((Model.Text) message).getText() + "\" to user : " + message.getSender().getNickname());
-            ChatNetwork.getInstance().sendString(((Model.Text) message).getText(), message.getSender().getAddr());
+        //Updating the model
+        int index = model.getUserList().indexOf(receiver);
+        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+        conversation.add (new Model.TextMsg(text, localUser));
+        model.setConversationNeedUpdate(true);
+    }
 
-            //Updating the model
-            int index = model.getUserList().indexOf(message.getSender());
-            Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+    public void sendFile(File f, User receiver) {
 
-            Model.Text t = new Model.Text(((Model.Text) message).getText(), localUser);
-            conversation.add(t);
-            model.setConversationNeedUpdate(true);
-        }
-        else {
+        int key = ChatNetwork.getInstance().sendFile(f, receiver.getAddr());
 
-        }
+        //Updating the model
+        int index = model.getUserList().indexOf(receiver);
+        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+        conversation.add (new Model.FileMsg(f, localUser, key));
+        model.setConversationNeedUpdate(true);
     }
     
     public void processMessage(Message m, InetAddress addr){
@@ -118,8 +120,9 @@ public class Controller {
                 int index = model.getUserList().indexOf(user);
                 Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
 
-                Model.Text t = new Model.Text(m.getData(), user);
+                Model.TextMsg t = new Model.TextMsg(m.getData(), user);
                 conversation.add(t);
+                model.setConversationNeedUpdate(true);
     			break;
     			
 			case bye:

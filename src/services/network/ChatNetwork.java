@@ -1,6 +1,7 @@
 package services.network;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.*;
@@ -9,6 +10,8 @@ import java.util.Enumeration;
 
 import services.Controller;
 import services.Message;
+import services.network.tcp.SenderTCP;
+import services.network.tcp.ServerTCP;
 import services.network.udp.ReceiverUDP;
 import services.network.udp.SenderUDP;
 import sun.net.InetAddressCachePolicy;
@@ -18,21 +21,43 @@ import sun.net.InetAddressCachePolicy;
  */
 public class ChatNetwork {
 	public static final int UDP_PORT = 9738;
+    public static final int TCP_SERVER_PORT = 9739;
     private static ChatNetwork instanceChatNetwork = new ChatNetwork();
     private SenderUDP senderUDP;
     private ReceiverUDP receiverUDP;
+    private ServerTCP serverTCP;
+
+    private int hashcodeTCP =0;
     
     
     private ChatNetwork(){
     	try {
 			senderUDP = new SenderUDP();
 			receiverUDP = new ReceiverUDP();
+            serverTCP = new ServerTCP();
+            serverTCP.start();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Error : " + e.toString());
 		}
 
     }
+
+    public int sendFile(File f, InetAddress addr) {
+        SenderTCP sender = SenderTCP.getInstance(hashcodeTCP);
+        sender.start();
+        sender.sendFile(f, addr);
+
+        hashcodeTCP++;
+        return hashcodeTCP-1;
+    }
+
+    public void newTCPConnection ()
+    {
+
+    }
+
+
     public static ChatNetwork getInstance(){
         return instanceChatNetwork;
     }

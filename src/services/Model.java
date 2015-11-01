@@ -1,5 +1,6 @@
 package services;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.Vector;
 
@@ -61,9 +62,9 @@ public class Model {
 		}
 
 	};
-	public static class Text extends Msg{
+	public static class TextMsg extends Msg{
 		private String text;
-		public Text(String text, User sender) {
+		public TextMsg(String text, User sender) {
 			super(sender);
 			this.text=text;
 		}
@@ -72,6 +73,22 @@ public class Model {
 		}
 		public String getText() {
 			return text;
+		}
+	}
+	public static class FileMsg extends Msg{
+
+		private File file;
+		private int key;
+		public FileMsg(File file, User sender, int key) {
+			super(sender);
+			this.file = file;
+			this.key = key;
+		}
+		public int getKey() {
+			return key;
+		}
+		public File getFile() {
+			return file;
 		}
 	}
 
