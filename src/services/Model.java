@@ -59,6 +59,7 @@ public class Model {
 				header = new String(getSender().getNickname() + ": ");
 			return header;
 		}
+
 	};
 	public static class Text extends Msg{
 		private String text;
@@ -78,7 +79,24 @@ public class Model {
 	//Attributes
 	private Vector<User> userList;
 	private Vector<Vector<Msg>> conversations;
+	private boolean userListNeedUpdate = false;
+	private boolean conversationNeedUpdate = false;
 
+	public boolean isUserListNeedUpdate() {
+		return userListNeedUpdate;
+	}
+
+	public void setUserListNeedUpdate(boolean userListNeedUpdate) {
+		this.userListNeedUpdate = userListNeedUpdate;
+	}
+
+	public boolean isConversationNeedUpdate() {
+		return conversationNeedUpdate;
+	}
+
+	public void setConversationNeedUpdate(boolean conversationNeedUpdate) {
+		this.conversationNeedUpdate = conversationNeedUpdate;
+	}
 
 	//Functions
     public int getUserListSize(){
@@ -97,6 +115,7 @@ public class Model {
 		{
 			userList.add(u);
 			conversations.add(new Vector<Msg>());
+			userListNeedUpdate=true;
 		}
     }
 	public void remoteUserDisconnect(InetAddress addr)
@@ -106,6 +125,7 @@ public class Model {
 		while(i<userList.size() && !found ){
 			if(userList.get(i).addr.equals(addr)){
 				userList.elementAt(i).setConnected(false);
+				userListNeedUpdate = true;
                 found = true;
 			}
 		}

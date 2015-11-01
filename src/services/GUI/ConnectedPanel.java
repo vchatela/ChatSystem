@@ -23,8 +23,9 @@ public class ConnectedPanel extends Panel implements ActionListener{
     private TextArea conversationTextField;
     private TextArea toSendTextField;
     private Button sendButton;
-
     private Button disconnectButton;
+
+    private Timer refreshTimer;
 
     public ConnectedPanel(Model model)
     {
@@ -72,6 +73,10 @@ public class ConnectedPanel extends Panel implements ActionListener{
         setSize(800, 600);
         this.getLayout().minimumLayoutSize(this);
 
+        refreshTimer = new Timer(100, this);
+        refreshTimer.setActionCommand("Refresh");
+        refreshTimer.start();
+
     }
 
     public void refreshUserList()
@@ -97,10 +102,6 @@ public class ConnectedPanel extends Panel implements ActionListener{
             {
                 Model.Text t = new Model.Text(toSendTextField.getText(), selectedRemoteUser);
                 Controller.getInstance().sendMessage(t);
-                /*conversationTextField.setEditable(true);
-                conversationTextField.setText(conversationTextField.getText() + t.toString() + System.lineSeparator());
-                conversationTextField.setEditable(false);*/
-                refreshEntireConversation();
                 toSendTextField.setText("");
             }
         }
@@ -116,19 +117,31 @@ public class ConnectedPanel extends Panel implements ActionListener{
             selectedUser.setText("Selected : " + selectedRemoteUser.getNickname());
             refreshEntireConversation();
         }
+        else if (e.getActionCommand()=="Refresh")
+        {
+            if (model.isConversationNeedUpdate()){
+                model.setConversationNeedUpdate(false);
+                refreshEntireConversation();
+            }
+            if (model.isUserListNeedUpdate()){
+                refreshUserList();
+                model.setUserListNeedUpdate(false);
+            }
+        }
     }
 
 
     private void refreshEntireConversation()
     {
         int index = model.getUserList().indexOf(selectedRemoteUser);
+        if (index==-1)
+            return; //No user selected, nothing to be done
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        conversationTextField.setEditable(true);
-        conversationTextField.setText("");
+        String s = "";
         for (Model.Msg m : conversation)
         {
-            conversationTextField.setText(conversationTextField.getText() + m + System.lineSeparator());
+            s = s + m + System.lineSeparator();
         }
-        conversationTextField.setEditable(false);
+        conversationTextField.setText(s);
     }
 }

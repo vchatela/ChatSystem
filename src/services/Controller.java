@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
+import services.GUI.ChatGUI;
 import services.Model.User;
 import services.network.ChatNetwork;
 
@@ -26,7 +27,6 @@ public class Controller {
     private int State;*/
 	
 	private Model model;
-
     private User localUser;
     private boolean connected = false;
 
@@ -75,6 +75,7 @@ public class Controller {
 
             Model.Text t = new Model.Text(((Model.Text) message).getText(), localUser);
             conversation.add(t);
+            model.setConversationNeedUpdate(true);
         }
         else {
 
