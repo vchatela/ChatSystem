@@ -43,7 +43,7 @@ public class Controller {
     
     public void Connect(String nickname) throws IOException
     {
-        //On vérifie que l'on ne soit pas déjà connecté
+        //On vï¿½rifie que l'on ne soit pas dï¿½jï¿½ connectï¿½
         if (connected)
             return;
 
@@ -95,7 +95,7 @@ public class Controller {
     }
     
     public void processMessage(Message m, InetAddress addr){
-        //On vérifie que l'on soit connecté
+        //On vï¿½rifie que l'on soit connectï¿½
         if (!connected)
             return;
 
@@ -108,7 +108,7 @@ public class Controller {
     		case hello:
     			model.addUser(new User(m.getData(), addr));
                 try {
-					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), localUser.getAddr());
+					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), addr);
                     System.out.println("Hello received from : " + m.getData());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -120,7 +120,6 @@ public class Controller {
     		case helloAck:
     			model.addUser(new User(m.getData(), addr));
                 System.out.println("HelloAck received from : " + m.getData());
-                //TODO open new "Comunica System"
     			break;
     			
     		case message:
@@ -128,6 +127,7 @@ public class Controller {
                 Model.User user = model.findUser(addr);
 
                 int index = model.getUserList().indexOf(user);
+
                 Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
 
                 Model.TextMsg t = new Model.TextMsg(m.getData(), user);

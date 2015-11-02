@@ -1,6 +1,5 @@
 package services.network.tcp;
 
-import javafx.stage.FileChooser;
 import services.network.ChatNetwork;
 
 import java.io.*;

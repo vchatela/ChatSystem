@@ -1,6 +1,6 @@
 package services.GUI;
 
-import javafx.stage.FileChooser;
+
 import services.Controller;
 import services.Model;
 import services.network.ChatNetwork;
