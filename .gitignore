@@ -1,6 +1,5 @@
 *.class
 
-.idea/*
 out/*
 
 .metadata/*
