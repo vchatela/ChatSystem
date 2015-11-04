@@ -6,6 +6,7 @@ import java.util.Vector;
 
 /**
  * Created by ValentinC on 21/10/2015.
+ *
  */
 public class Model {
 
@@ -121,8 +122,8 @@ public class Model {
     }
 	
     public Model(){
-    	userList = new Vector<User>();
-		conversations = new Vector<Vector<Msg>>();
+    	userList = new Vector<>();
+		conversations = new Vector<>();
     }
     
     public void addUser(User u)
@@ -131,7 +132,7 @@ public class Model {
     	if (!userList.contains(u))
 		{
 			userList.add(u);
-			conversations.add(new Vector<Msg>());
+			conversations.add(new Vector<>());
 			userListNeedUpdate=true;
 		}
     }

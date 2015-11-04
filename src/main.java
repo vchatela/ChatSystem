@@ -1,18 +1,18 @@
 import services.*;
 import services.GUI.ChatGUI;
-import services.network.ChatNetwork;
 
-import java.io.IOException;
-import java.net.InetAddress;
+/**
+ * Created by ValentinC on 21/10/2015.
+ *
+ */
 
-
-public class main {
+public class Main {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ChatGUI gui = new ChatGUI(Controller.getInstance().getModel(),(args.length!=0 ? args[0] : null));
+		new ChatGUI(Controller.getInstance().getModel(),(args.length!=0 ? args[0] : null));
 	}
 
 }

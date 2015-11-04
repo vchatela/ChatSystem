@@ -1,7 +1,6 @@
 package services.GUI;
 
 
-import services.Controller;
 import services.Model;
 import services.network.ChatNetwork;
 
@@ -11,11 +10,10 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Created by Lucas on 31/10/2015.
+ *
  */
 public class ConnectedFrame extends JFrame{
 
@@ -27,10 +25,6 @@ public class ConnectedFrame extends JFrame{
     private JButton disconnectButton;
     private ImageIcon iconOnline;
     private ImageIcon iconNotification;
-
-    //Panels
-    private ConversationComponent conversationComponent;
-
 
     public ConnectedFrame(Model model)
     {
@@ -69,12 +63,13 @@ public class ConnectedFrame extends JFrame{
         listUser.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting() == false) {
+                if (!e.getValueIsAdjusting()) {
                     if (listUser.getSelectedIndex() != -1) {
+                        // TODO : check if user tab already exist and open this one !
+                        // else create it
                         JComponent panel1;
                         panel1 = new ConversationComponent(model, listUser.getSelectedValue());
                         tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
-                    } else {
                     }
                 }
             }
@@ -140,7 +135,7 @@ public class ConnectedFrame extends JFrame{
 
     private void closeProgram(){
         if(JOptionPane.showConfirmDialog(null,
-                "Do you wanna close the window?",
+                "Do you wanna Disconnect?",
                 "Choose",
                 JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
             try {
