@@ -39,7 +39,7 @@ public class unitTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assert i + 1 ==Controller.getInstance().getNbrUser(); // TODO : check in local
+        assert i + 1 == Controller.getInstance().getNbrUser(); // TODO : check in local
     }
 
     @Test

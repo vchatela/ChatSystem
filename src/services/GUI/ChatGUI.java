@@ -11,14 +11,12 @@ import services.Model;
  * Created by Lucas on 31/10/2015.
  */
 public class ChatGUI extends Frame implements ActionListener, WindowListener {
-    private Model model;
 
     private DisconnectedPanel disconnectedPanel;
     private ConnectedPanel connectedPanel;
 
     public ChatGUI(Model model)
     {
-        this.model = model;
         addWindowListener(this);
         setLayout(new CardLayout());
 
