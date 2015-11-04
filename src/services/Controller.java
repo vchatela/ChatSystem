@@ -15,17 +15,6 @@ import services.network.ChatNetwork;
  *
  */
 public class Controller {
-
-    /*public static final int USERVIEW_CLI = 0;
-    public static final int USERVIEW_GUI = 1;
-    public static final int STATE_ACTIVATED = 1;
-    public static final int STATE_DESACTIVATED = 0;
-    public static final int TCP_PROTOCOL_SERVER = 0;
-    public static final int UDP_PROTOCOL_SERVER = 1;
-
-    private String inMessage;
-    private String outMessage;
-    private int State;*/
 	
 	private Model model;
     private User localUser;
@@ -43,7 +32,7 @@ public class Controller {
     
     public void Connect(String nickname) throws IOException
     {
-        //On v�rifie que l'on ne soit pas d�j� connect�
+        //On vérifie que l'on ne soit pas déjà connecté
         if (connected)
             return;
 
@@ -95,7 +84,7 @@ public class Controller {
     }
     
     public void processMessage(Message m, InetAddress addr){
-        //On v�rifie que l'on soit connect�
+        //On vérifie que l'on soit connecté
         if (!connected)
             return;
 
