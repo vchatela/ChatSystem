@@ -12,7 +12,7 @@ public class main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ChatGUI gui = new ChatGUI(Controller.getInstance().getModel());
+		ChatGUI gui = new ChatGUI(Controller.getInstance().getModel(),(args.length!=0 ? args[0] : null));
 	}
 
 }

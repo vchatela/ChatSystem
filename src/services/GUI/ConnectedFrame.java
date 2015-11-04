@@ -3,146 +3,101 @@ package services.GUI;
 
 import services.Controller;
 import services.Model;
+import services.network.ChatNetwork;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.awt.event.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by Lucas on 31/10/2015.
  */
 public class ConnectedFrame extends JFrame{
 
-    Model model;
-    Model.User selectedRemoteUser;
+    private Model model;
+
+    //J
+    private JList<Model.User> listUser;
+    private JTabbedPane tabbedPane;
+    private JButton disconnectButton;
+    private ImageIcon iconOnline;
+    private ImageIcon iconNotification;
 
     //Panels
-    Choice userListChoice;
-    private JButton selectUserButton;
-    private JLabel selectedUser;
-    private JTextArea conversationTextField;
-    private JTextArea toSendTextField;
-    private JButton sendButton;
-    private JButton disconnectButton;
-    private JButton sendFileButton;
-
-    //Other tools
-    private Timer refreshTimer;
-    private JFileChooser fc;
+    private ConversationComponent conversationComponent;
 
 
     public ConnectedFrame(Model model)
     {
         this.model = model;
-        GridBagConstraints constraints = new GridBagConstraints();
+
         setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
-        //Setting up interface
-        userListChoice = new Choice();
-        selectUserButton = new JButton("Select");
-        selectedUser = new JLabel("Selected : none");
-        conversationTextField = new JTextArea("");
-        conversationTextField.setEditable(false);
-        toSendTextField = new JTextArea("");
-        sendButton = new JButton("Send");
-        sendFileButton = new JButton("Send a file ...");
+        iconOnline = createImageIcon("/res/onlineIcon.png","Online icon");
+        iconNotification = createImageIcon("/res/notificationIcon.png","Notification icon");
 
-        selectUserButton.addActionListener(new ActionListener() {
+        //TabbedPane
+        tabbedPane = new JTabbedPane();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridheight = 2;
+        add(tabbedPane,c);
+
+        //Disconnect Button
+        disconnectButton = new JButton("Disconnection");
+        disconnectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (userListChoice.getSelectedIndex()==-1)
-                {
-                    System.out.println("Aucun utilisateur selectionne.");
-                    return;
-                }
-
-                selectedRemoteUser = model.getUserList().elementAt(userListChoice.getSelectedIndex());
-                selectedUser.setText("Selected : " + selectedRemoteUser.getNickname());
-                refreshEntireConversation();
+                //TODO : manage sending file etc
+                closeProgram();
             }
         });
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedRemoteUser==null)
-                    System.out.println("Aucun utilisateur selectionne.");
-                else if (!selectedRemoteUser.isConnected())
-                    System.out.println("L'utilisateur selectionne est deconnecte.");
+        c.gridx = 1;
+        c.gridy = 2;
+        add(disconnectButton,c);
 
-                else
-                {
-                    Controller.getInstance().sendText(toSendTextField.getText(), selectedRemoteUser);
-                    toSendTextField.setText("");
-                }
-            }
-        });
-        sendFileButton.addActionListener(new ActionListener() {
+
+        // Jlist
+        listUser = new JList(model.getUserList());
+        listUser.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedRemoteUser==null)
-                    System.out.println("Aucun utilisateur selectionne.");
-                else if (!selectedRemoteUser.isConnected())
-                    System.out.println("L'utilisateur selectionne est deconnecte.");
-                else {
-                    if (fc.showOpenDialog(null)== JFileChooser.APPROVE_OPTION) {
-                        Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting() == false) {
+                    if (listUser.getSelectedIndex() != -1) {
+                        JComponent panel1;
+                        panel1 = new ConversationComponent(model, listUser.getSelectedValue());
+                        tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
+                    } else {
                     }
                 }
             }
         });
 
-        constraints.gridheight = 1;
-        constraints.gridwidth = 1;
-        constraints.weightx = 0.5;
 
-        constraints.gridx=0;
-        constraints.gridy=0;
-        constraints.ipady=20;
-        constraints.ipadx=400;
-        add(userListChoice, constraints);
-        constraints.gridx=1;
-        constraints.gridy=0;
-        constraints.ipady=0;
-        constraints.ipadx=0;
-        add(selectUserButton, constraints);
-        constraints.gridx=1;
-        constraints.gridy=1;
-        constraints.ipady=20;
-        constraints.ipadx=200;
-        add(selectedUser, constraints);
-        constraints.gridx=1;
-        constraints.gridy=2;
-        constraints.ipady=10;
-        constraints.ipadx=20;
-        add(sendButton, constraints);
-        constraints.gridx=0;
-        constraints.gridy=1;
-        constraints.ipady=20;
-        constraints.ipadx=40;
-        add(conversationTextField,constraints);
-        constraints.gridx=0;
-        constraints.gridy=2;
-        add(toSendTextField, constraints);
-        constraints.gridx=0;
-        constraints.gridy=3;
-        constraints.ipady=0;
-        constraints.ipadx=0;
-        add(sendFileButton,constraints);
+        listUser.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listUser.setLayoutOrientation(JList.VERTICAL);
+        listUser.setVisibleRowCount(-1);
+        JScrollPane listScroller = new JScrollPane(listUser);
+        listScroller.setPreferredSize(new Dimension(250, 80));
 
-        setSize(800, 600);
-        this.getLayout().minimumLayoutSize(this);
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        add(listScroller,c);
 
+        //setSize(300,300);
 
         //Setting up refresh timer
-        refreshTimer = new Timer(100, new ActionListener() {
+        Timer refreshTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (model.isConversationNeedUpdate()){
-                    model.setConversationNeedUpdate(false);
-                    refreshEntireConversation();
-                }
                 if (model.isUserListNeedUpdate()){
                     refreshUserList();
                     model.setUserListNeedUpdate(false);
@@ -152,40 +107,49 @@ public class ConnectedFrame extends JFrame{
         refreshTimer.setActionCommand("Refresh");
         refreshTimer.start();
 
-        //Setting up file chooser
-        fc = new JFileChooser();
-        pack();
+        setSize(800, 600);
+        this.getLayout().minimumLayoutSize(this);
 
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int answer = JOptionPane.showConfirmDialog(null, "You want to quit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (answer == JOptionPane.YES_OPTION) {
+                    dispose();
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     public void refreshUserList()
     {
-        Vector<Model.User> userList = model.getUserList();
-        userListChoice.removeAll();
-        for (Model.User u : userList)
-        {
-            userListChoice.add(u.getNickname());
+        listUser.removeAll();
+        listUser.setListData(model.getUserList());
+    }
+
+    protected ImageIcon createImageIcon(String path,
+                                        String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
         }
     }
 
-
-    private void refreshEntireConversation()
-    {
-        int index = model.getUserList().indexOf(selectedRemoteUser);
-        if (index==-1)
-            return; //No user selected, nothing to be done
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        String s = "";
-        for (Model.Msg m : conversation)
-        {
-            if (m.getClass()==Model.TextMsg.class) {
-                s = s + m + System.lineSeparator();
+    private void closeProgram(){
+        if(JOptionPane.showConfirmDialog(null,
+                "Do you wanna close the window?",
+                "Choose",
+                JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+            try {
+                ChatNetwork.getInstance().sendBye();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
-            else if(m.getClass()==Model.FileMsg.class) {
-                s= s+"Oui a file :D\n";
-
-            }
+            dispose();
+            System.exit(0);
         }
-        conversationTextField.setText(s);
     }
 }
