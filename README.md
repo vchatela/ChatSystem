@@ -3,7 +3,7 @@
 A new way to comunicate inside a local network, to exchange message and files.
 
 ## Features
-
+![ChatSystem](http://oi68.tinypic.com/2ywj0vq.jpg)
 ## Tests
 ### Unit Tests
 
