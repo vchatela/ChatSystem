@@ -22,6 +22,7 @@ public class ConversationComponent extends JComponent {
     private JTextField message;
     private JButton jSend;
     private JButton jSendFile;
+    private final static int sizeCutMessage = 70;
 
 
     //Other tools
@@ -131,14 +132,23 @@ public class ConversationComponent extends JComponent {
         for (Model.Msg m : conversation)
         {
             if (m.getClass()==Model.TextMsg.class) {
-                s = s + m + System.lineSeparator();
+                s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
             }
             else if(m.getClass()==Model.FileMsg.class) {
-                s= s+"Getting a file ! Will be implemented soon..\n";
+                s= s+"Getting a file ! Will be implemented soon.." + System.lineSeparator() + System.lineSeparator();
 
             }
         }
         this.conversation.setText(s);
     }
-
+    public String formatMessage(String value){
+        String res ="";
+        int i = 0;
+        while(i+sizeCutMessage<value.length()) {
+            res += value.substring(i,i+sizeCutMessage) + System.lineSeparator();
+            i+=sizeCutMessage;
+        }
+        res += value.substring(i,value.length());
+        return res;
+    }
 }

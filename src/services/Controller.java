@@ -137,5 +137,4 @@ public class Controller {
     public User getLocalUser() {
         return localUser;
     }
-    
 }

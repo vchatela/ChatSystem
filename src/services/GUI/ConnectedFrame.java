@@ -1,6 +1,5 @@
 package services.GUI;
 
-
 import services.Model;
 import services.network.ChatNetwork;
 
@@ -10,6 +9,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.Vector;
 
 /**
  * Created by Lucas on 31/10/2015.
@@ -25,25 +25,26 @@ public class ConnectedFrame extends JFrame{
     private JButton disconnectButton;
     private ImageIcon iconOnline;
     private ImageIcon iconNotification;
+    private Vector<Model.User> openedTab;
 
     public ConnectedFrame(Model model)
     {
         this.model = model;
 
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        setLayout(new GridLayout(1,2));
 
-        iconOnline = createImageIcon("/res/onlineIcon.png","Online icon");
-        iconNotification = createImageIcon("/res/notificationIcon.png","Notification icon");
+        //TODO
+        //iconOnline = createImageIcon("/res/onlineIcon.png","Online icon");
+        //iconNotification = createImageIcon("/res/notificationIcon.png","Notification icon");
 
         //TabbedPane
+        openedTab = new Vector<>();
+
         tabbedPane = new JTabbedPane();
+        add(tabbedPane);
 
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridheight = 2;
-        add(tabbedPane,c);
-
+        JPanel j = new JPanel();
+        j.setLayout(new GridLayout(2,1));
         //Disconnect Button
         disconnectButton = new JButton("Disconnection");
         disconnectButton.addActionListener(new ActionListener() {
@@ -53,9 +54,8 @@ public class ConnectedFrame extends JFrame{
                 closeProgram();
             }
         });
-        c.gridx = 1;
-        c.gridy = 2;
-        add(disconnectButton,c);
+
+        j.add(disconnectButton);
 
 
         // Jlist
@@ -66,10 +66,17 @@ public class ConnectedFrame extends JFrame{
                 if (!e.getValueIsAdjusting()) {
                     if (listUser.getSelectedIndex() != -1) {
                         // TODO : check if user tab already exist and open this one !
-                        // else create it
-                        JComponent panel1;
-                        panel1 = new ConversationComponent(model, listUser.getSelectedValue());
-                        tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
+                        if(openedTab.indexOf(listUser.getSelectedValue()) != -1){
+                            // open the tab at indexOf
+                        }
+                        else {
+                            // else create it
+                            JComponent panel1;
+                            panel1 = new ConversationComponent(model, listUser.getSelectedValue());
+                            panel1.setSize(500, 500);
+                            openedTab.add(listUser.getSelectedValue());
+                            tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
+                        }
                     }
                 }
             }
@@ -82,12 +89,9 @@ public class ConnectedFrame extends JFrame{
         JScrollPane listScroller = new JScrollPane(listUser);
         listScroller.setPreferredSize(new Dimension(250, 80));
 
-        c.gridx = 1;
-        c.gridy = 0;
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        add(listScroller,c);
+        j.add(listScroller);
 
-        //setSize(300,300);
+        add(j);
 
         //Setting up refresh timer
         Timer refreshTimer = new Timer(100, new ActionListener() {
@@ -102,7 +106,7 @@ public class ConnectedFrame extends JFrame{
         refreshTimer.setActionCommand("Refresh");
         refreshTimer.start();
 
-        setSize(800, 600);
+        setSize(1000, 800);
         this.getLayout().minimumLayoutSize(this);
 
         this.addWindowListener(new WindowAdapter() {
