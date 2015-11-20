@@ -52,7 +52,7 @@ public class SenderTCP extends Thread{
 
                 input = new DataInputStream( clientSocket.getInputStream());
                 output =new DataOutputStream( clientSocket.getOutputStream());
-                output.writeChars(f.getName());
+                output.writeUTF(f.getName());
                 output.writeLong(fileLength);
 
                 state=State.waiting_for_accept;
@@ -65,7 +65,6 @@ public class SenderTCP extends Thread{
     }
 
     public void run(){
-
         while(true)
         {
             switch (state)
@@ -87,6 +86,7 @@ public class SenderTCP extends Thread{
                     break;
             }
         }
+        
     }
 
     private void waitFile()
@@ -141,6 +141,9 @@ public class SenderTCP extends Thread{
 
             state=State.file_transfered;
             System.out.println("SenderTCP : file sent");
+            
+            bis.close();
+            fis.close();
 
         }
         catch (IOException e) {

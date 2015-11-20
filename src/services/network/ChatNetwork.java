@@ -27,7 +27,8 @@ public class ChatNetwork {
     private ReceiverUDP receiverUDP;
     private ServerTCP serverTCP;
 
-    private int hashcodeTCP =0;
+    private int hashcodeTCPSender =0;
+    private int hashcodeTCPReceiver = 0;
     
     
     private ChatNetwork(){
@@ -44,21 +45,22 @@ public class ChatNetwork {
     }
 
     public int sendFile(File f, InetAddress addr) {
-        SenderTCP sender = SenderTCP.getInstance(hashcodeTCP);
+        SenderTCP sender = SenderTCP.getInstance(hashcodeTCPSender);
         sender.start();
         sender.sendFile(f, addr);
 
-        hashcodeTCP++;
-        return hashcodeTCP-1;
+        hashcodeTCPSender++;
+        return hashcodeTCPSender-1;
     }
 
     public void newTCPConnection (Socket socket)
     {
-        ReceiverTCP receiver = ReceiverTCP.getInstance(hashcodeTCP);
+        ReceiverTCP receiver = ReceiverTCP.getInstance(hashcodeTCPReceiver);
+        receiver.setClientSocket(socket);
         receiver.start();
-        Controller.getInstance().processPermissionForFileTransfer(hashcodeTCP, socket.getInetAddress());
+        Controller.getInstance().processPermissionForFileTransfer(hashcodeTCPReceiver, socket.getInetAddress());
 
-        hashcodeTCP++;
+        hashcodeTCPReceiver++;
     }
 
 

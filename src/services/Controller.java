@@ -36,7 +36,7 @@ public class Controller {
         if (connected)
             return;
 
-		localUser = new User((nickname + " @" +InetAddress.getLocalHost().getHostName()), InetAddress.getLocalHost());
+		localUser = new User((nickname + "@" +InetAddress.getLocalHost().getHostName()), InetAddress.getLocalHost());
         ChatNetwork.getInstance().sendHello(localUser.getNickname());
         connected = true;
     }
