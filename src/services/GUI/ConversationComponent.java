@@ -120,7 +120,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand())
 		{
-			case "Resfresh":
+			case "Refresh":
                 if (model.isConversationNeedUpdate()){
                     model.setConversationNeedUpdate(false);
                     refreshEntireConversation();
