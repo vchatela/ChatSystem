@@ -15,7 +15,7 @@ import java.util.Vector;
  * Created by Lucas on 31/10/2015.
  *
  */
-public class ConnectedFrame extends JFrame{
+public class ConnectedFrame extends JFrame implements ActionListener, WindowListener,ListSelectionListener{
 
     private Model model;
 
@@ -47,40 +47,14 @@ public class ConnectedFrame extends JFrame{
         j.setLayout(new GridLayout(2,1));
         //Disconnect Button
         disconnectButton = new JButton("Disconnection");
-        disconnectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO : manage sending file etc
-                closeProgram();
-            }
-        });
+        disconnectButton.addActionListener(this);
 
         j.add(disconnectButton);
 
 
         // Jlist
         listUser = new JList(model.getUserList());
-        listUser.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    if (listUser.getSelectedIndex() != -1) {
-                        // TODO : check if user tab already exist and open this one !
-                        if(openedTab.indexOf(listUser.getSelectedValue()) != -1){
-                            // open the tab at indexOf
-                        }
-                        else {
-                            // else create it
-                            JComponent panel1;
-                            panel1 = new ConversationComponent(model, listUser.getSelectedValue());
-                            panel1.setSize(500, 500);
-                            openedTab.add(listUser.getSelectedValue());
-                            tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
-                        }
-                    }
-                }
-            }
-        });
+        listUser.addListSelectionListener(this);
 
 
         listUser.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -94,37 +68,21 @@ public class ConnectedFrame extends JFrame{
         add(j);
 
         //Setting up refresh timer
-        Timer refreshTimer = new Timer(100, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (model.isUserListNeedUpdate()){
-                    refreshUserList();
-                    model.setUserListNeedUpdate(false);
-                }
-            }
-        });
+        Timer refreshTimer = new Timer(100, this);
         refreshTimer.setActionCommand("Refresh");
         refreshTimer.start();
 
         setSize(1000, 800);
         this.getLayout().minimumLayoutSize(this);
 
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                int answer = JOptionPane.showConfirmDialog(null, "You want to quit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (answer == JOptionPane.YES_OPTION) {
-                    dispose();
-                    System.exit(0);
-                }
-            }
-        });
+        this.addWindowListener(this);
     }
 
     public void refreshUserList()
     {
         listUser.removeAll();
         listUser.setListData(model.getUserList());
-    }
+    }                
 
     protected ImageIcon createImageIcon(String path,
                                         String description) {
@@ -151,4 +109,89 @@ public class ConnectedFrame extends JFrame{
             System.exit(0);
         }
     }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand())
+		{
+			case "Disconnection":
+                //TODO : manage sending file etc
+                closeProgram();
+				break;
+				
+			case "Refresh" :
+                if (model.isUserListNeedUpdate()){
+                    refreshUserList();
+                    model.setUserListNeedUpdate(false);
+                }
+                break;
+		}
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+        int answer = JOptionPane.showConfirmDialog(null, "You want to quit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (answer == JOptionPane.YES_OPTION) {
+            dispose();
+            System.exit(0);
+            }
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            if (listUser.getSelectedIndex() != -1) {
+                // TODO : check if user tab already exist and open this one !
+                if(openedTab.indexOf(listUser.getSelectedValue()) != -1){
+                    // open the tab at indexOf
+                }
+                else {
+                    // else create it
+                    JComponent panel1;
+                    panel1 = new ConversationComponent(model, listUser.getSelectedValue());
+                    panel1.setSize(500, 500);
+                    openedTab.add(listUser.getSelectedValue());
+                    tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
+                }
+            }
+        }		
+	}
 }

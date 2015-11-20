@@ -132,7 +132,7 @@ public class Model {
     	if (!userList.contains(u))
 		{
 			userList.add(u);
-			conversations.add(new Vector<>());
+			conversations.add(new Vector<Msg>());
 			userListNeedUpdate=true;
 		}
     }
