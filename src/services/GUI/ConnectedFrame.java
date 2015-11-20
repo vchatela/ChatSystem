@@ -21,17 +21,16 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
     //J
     private JList<Model.User> listUser;
+    private JList<String> listFilesWaiting; // TODO !!!
     private JTabbedPane tabbedPane;
     private JButton disconnectButton;
-    private ImageIcon iconOnline;
-    private ImageIcon iconNotification;
     private Vector<Model.User> openedTab;
 
     public ConnectedFrame(Model model)
     {
         this.model = model;
 
-        setLayout(new GridLayout(1,2));
+        setLayout(new BorderLayout());
 
         //TODO
         //iconOnline = createImageIcon("/res/onlineIcon.png","Online icon");
@@ -41,18 +40,17 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         openedTab = new Vector<>();
 
         tabbedPane = new JTabbedPane();
-        add(tabbedPane);
+        add(tabbedPane,BorderLayout.CENTER);
+
 
         JPanel j = new JPanel();
-        j.setLayout(new GridLayout(2,1));
+        j.setLayout(new BorderLayout());
         //Disconnect Button
         disconnectButton = new JButton("Disconnection");
         disconnectButton.addActionListener(this);
+        j.add(disconnectButton,BorderLayout.PAGE_START);
 
-        j.add(disconnectButton);
-
-
-        // Jlist
+        // Jlist User
         listUser = new JList(model.getUserList());
         listUser.addListSelectionListener(this);
 
@@ -63,9 +61,19 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         JScrollPane listScroller = new JScrollPane(listUser);
         listScroller.setPreferredSize(new Dimension(250, 80));
 
-        j.add(listScroller);
+        j.add(listScroller,BorderLayout.CENTER);
 
-        add(j);
+        //JList Files
+        listFilesWaiting = new JList<>();
+        listFilesWaiting.addListSelectionListener(this); // TODO
+        listFilesWaiting.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        listFilesWaiting.setLayoutOrientation(JList.VERTICAL);
+        listFilesWaiting.setVisibleRowCount(-1);
+        JScrollPane listScrollerFiles = new JScrollPane(listFilesWaiting);
+        listScrollerFiles.setPreferredSize(new Dimension(250, 80));
+        j.add(listScrollerFiles,BorderLayout.PAGE_END);
+
+        add(j,BorderLayout.LINE_END);
 
         //Setting up refresh timer
         Timer refreshTimer = new Timer(100, this);
@@ -189,7 +197,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                     panel1 = new ConversationComponent(model, listUser.getSelectedValue());
                     panel1.setSize(500, 500);
                     openedTab.add(listUser.getSelectedValue());
-                    tabbedPane.addTab(listUser.getSelectedValue().getNickname(), iconOnline, panel1);
+                    tabbedPane.addTab(listUser.getSelectedValue().getNickname(), null, panel1); //TODO : manage null
                 }
             }
         }		
