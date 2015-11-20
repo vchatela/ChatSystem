@@ -32,54 +32,40 @@ public class ConversationComponent extends JComponent implements ActionListener{
         this.model = model;
         this.selectedRemoteUser = selectedRemoteUser;
 
-        setLayout(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
+        setLayout(new BorderLayout());
 
         conversation = new JTextArea();
         conversation.setEditable(false);
-        constraints.gridx=GridBagConstraints.REMAINDER;
-        constraints.gridy=0;
-        constraints.ipady=20;
-        constraints.ipadx=40;
-        constraints.insets = new Insets(15, 15, 15, 15);
-        add(conversation,constraints);
+        JScrollPane j= new JScrollPane(conversation);
+        add(j,BorderLayout.CENTER);
 
-
+        JPanel b1 = new JPanel();
+        b1.setLayout(new BorderLayout());
 
         message = new JTextField();
         message.addActionListener(this);
-        message.setSize(400,100);
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.ipady=20;
-        constraints.ipadx=40;
-        constraints.insets = new Insets(15, 15, 15, 15);
-        add(message,constraints);
+        b1.add(message,BorderLayout.CENTER);
+
+        JPanel b2 = new JPanel();
+        b2.setLayout(new BorderLayout());
 
         jSend = new JButton("Send");
         jSend.addActionListener(this);
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.ipady=20;
-        constraints.ipadx=40;
-        constraints.insets = new Insets(15, 15, 15, 15);
-        add(jSend,constraints);
-
-
+        b2.add(jSend,BorderLayout.PAGE_START);
 
         //Setting up file chooser
         fc = new JFileChooser();
 
-
         jSendFile = new JButton("Send a File");
         jSendFile.addActionListener(this);
+        b2.add(jSendFile,BorderLayout.PAGE_END);
 
-        constraints.gridx = 2;
-        constraints.gridy =1;
-        constraints.ipady=20;
-        constraints.ipadx=40;
-        constraints.insets = new Insets(15, 15, 15, 15);
-        add(jSendFile,constraints);
+        JPanel b3 = new JPanel();
+        b3.setLayout(new BorderLayout());
+        b3.add(b1,BorderLayout.CENTER);
+        b3.add(b2,BorderLayout.LINE_END);
+
+        add(b3,BorderLayout.PAGE_END);
 
         Timer refreshTimer = new Timer(100, this);
         refreshTimer.setActionCommand("Refresh");
@@ -125,20 +111,22 @@ public class ConversationComponent extends JComponent implements ActionListener{
                     model.setConversationNeedUpdate(false);
                     refreshEntireConversation();
                 }
-				break;
+            break;
 				
 			case "Send" :
                 if (selectedRemoteUser==null)
                     System.out.println("Aucun utilisateur selectionne.");
                 else if (!selectedRemoteUser.isConnected())
                     System.out.println("L'utilisateur selectionne est deconnecte.");
-
+                else if(message.getText().equals("")){
+                    //do nothing
+                }
                 else
                 {
                     Controller.getInstance().sendText(message.getText(), selectedRemoteUser);
                     message.setText("");
                 }
-				break;
+            break;
 				
 			case "Send a File" :
                 if (selectedRemoteUser==null)
@@ -150,7 +138,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
                         Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
                     }
                 }
-				break;
+            break;
 				
 		}
 		

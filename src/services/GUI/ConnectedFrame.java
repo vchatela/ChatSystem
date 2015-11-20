@@ -31,7 +31,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
     {
         this.model = model;
 
-        setLayout(new GridLayout(1,2));
+        setLayout(new BorderLayout());
 
         //TODO
         //iconOnline = createImageIcon("/res/onlineIcon.png","Online icon");
@@ -41,16 +41,15 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         openedTab = new Vector<>();
 
         tabbedPane = new JTabbedPane();
-        add(tabbedPane);
+        add(tabbedPane,BorderLayout.CENTER);
+
 
         JPanel j = new JPanel();
         j.setLayout(new GridLayout(2,1));
         //Disconnect Button
         disconnectButton = new JButton("Disconnection");
         disconnectButton.addActionListener(this);
-
-        j.add(disconnectButton);
-
+        j.add(disconnectButton,"Disco");
 
         // Jlist
         listUser = new JList(model.getUserList());
@@ -63,9 +62,11 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         JScrollPane listScroller = new JScrollPane(listUser);
         listScroller.setPreferredSize(new Dimension(250, 80));
 
-        j.add(listScroller);
+        j.add(listScroller,"List");
 
-        add(j);
+
+
+        add(j,BorderLayout.LINE_END);
 
         //Setting up refresh timer
         Timer refreshTimer = new Timer(100, this);
