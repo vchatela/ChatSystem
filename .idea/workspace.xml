@@ -7,10 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e51d1d48-a494-474a-8cb5-6098c2cc9109" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/services/GUI/ConnectedFrame.java" afterPath="$PROJECT_DIR$/src/services/GUI/ConnectedFrame.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/services/GUI/ConversationComponent.java" afterPath="$PROJECT_DIR$/src/services/GUI/ConversationComponent.java" />
     </list>
     <ignored path="ChatSystem.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,8 +46,8 @@
       <file leaf-file-name="ConnectedFrame.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/services/GUI/ConnectedFrame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3529412">
-              <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
+            <state vertical-scroll-proportion="0.8637771">
+              <caret line="66" column="35" selection-start-line="66" selection-start-column="35" selection-end-line="66" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -994,12 +991,12 @@
       <workItem from="1446825553383" duration="1704000" />
       <workItem from="1447012826586" duration="1521000" />
       <workItem from="1447152592089" duration="2484000" />
-      <workItem from="1448007371914" duration="4169000" />
+      <workItem from="1448007371914" duration="4465000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="34216000" />
+    <option name="totallyTimeSpent" value="34512000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="0" width="976" height="1038" extended-state="0" />
@@ -1507,8 +1504,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/services/GUI/ConnectedFrame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3529412">
-          <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
+        <state vertical-scroll-proportion="0.8637771">
+          <caret line="66" column="35" selection-start-line="66" selection-start-column="35" selection-end-line="66" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

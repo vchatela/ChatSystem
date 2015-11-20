@@ -45,11 +45,11 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
 
         JPanel j = new JPanel();
-        j.setLayout(new GridLayout(2,1));
+        j.setLayout(new BorderLayout());
         //Disconnect Button
         disconnectButton = new JButton("Disconnection");
         disconnectButton.addActionListener(this);
-        j.add(disconnectButton,"Disco");
+        j.add(disconnectButton,BorderLayout.PAGE_START);
 
         // Jlist
         listUser = new JList(model.getUserList());
@@ -62,9 +62,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         JScrollPane listScroller = new JScrollPane(listUser);
         listScroller.setPreferredSize(new Dimension(250, 80));
 
-        j.add(listScroller,"List");
-
-
+        j.add(listScroller,BorderLayout.CENTER);
 
         add(j,BorderLayout.LINE_END);
 
