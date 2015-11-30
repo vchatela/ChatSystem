@@ -56,7 +56,7 @@ public class Model {
 		public String toString(){
 			String header;
 			if (getSender().equals(Controller.getInstance().getLocalUser()))
-				header = new String("You: " + System.lineSeparator());
+				header = new String( Controller.getInstance().getLocalUser().getNickname()+ ": " + System.lineSeparator());
 			else
 				header = new String(getSender().getNickname() + ": " + System.lineSeparator());
 			return header;

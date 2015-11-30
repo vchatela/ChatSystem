@@ -36,6 +36,9 @@ public class ConversationComponent extends JComponent implements ActionListener{
 
         conversation = new JTextArea();
         conversation.setEditable(false);
+        // TODO
+        //Font font = new Font("Verdana", Font.BOLD, 12);
+         //conversation.setFont(font);
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
 

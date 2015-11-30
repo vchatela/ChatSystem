@@ -32,10 +32,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
         setLayout(new BorderLayout());
 
-        //TODO
-        //iconOnline = createImageIcon("/res/onlineIcon.png","Online icon");
-        //iconNotification = createImageIcon("/res/notificationIcon.png","Notification icon");
-
         //TabbedPane
         openedTab = new Vector<>();
 
@@ -90,17 +86,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
     {
         listUser.removeAll();
         listUser.setListData(model.getUserList());
-    }                
-
-    protected ImageIcon createImageIcon(String path,
-                                        String description) {
-        java.net.URL imgURL = getClass().getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL, description);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
-        }
     }
 
     private void closeProgram(){

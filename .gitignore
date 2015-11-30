@@ -63,3 +63,4 @@ $RECYCLE.BIN/
 .idea/.name
 .gradle/*
 .idea/*
+.idea/workspace.xml
