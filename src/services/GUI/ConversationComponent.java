@@ -151,4 +151,8 @@ public class ConversationComponent extends JComponent implements ActionListener{
             message.setText("");
         }
     }
+
+    public void disableTextMessage(){
+        message.setEditable(false);
+    }
 }
