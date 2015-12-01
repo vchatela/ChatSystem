@@ -25,6 +25,8 @@ public class ConversationComponent extends JComponent implements ActionListener{
     private final static int sizeCutMessage = 70;
 
 
+    // TODO : when someone quit we need to block the message text
+
     //Other tools
     private JFileChooser fc;
 
@@ -107,43 +109,46 @@ public class ConversationComponent extends JComponent implements ActionListener{
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		switch (e.getActionCommand())
-		{
-			case "Refresh":
-                if (model.isConversationNeedUpdate()){
-                    model.setConversationNeedUpdate(false);
-                    refreshEntireConversation();
-                }
-            break;
-				
-			case "Send" :
-                if (selectedRemoteUser==null)
-                    System.out.println("Aucun utilisateur selectionne.");
-                else if (!selectedRemoteUser.isConnected())
-                    System.out.println("L'utilisateur selectionne est deconnecte.");
-                else if(message.getText().equals("")){
-                    //do nothing
-                }
-                else
-                {
-                    Controller.getInstance().sendText(message.getText(), selectedRemoteUser);
-                    message.setText("");
-                }
-            break;
-				
-			case "Send a File" :
-                if (selectedRemoteUser==null)
-                    System.out.println("Aucun utilisateur selectionne.");
-                else if (!selectedRemoteUser.isConnected())
-                    System.out.println("L'utilisateur selectionne est deconnecte.");
-                else {
-                    if (fc.showOpenDialog(null)== JFileChooser.APPROVE_OPTION) {
-                        Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
+        if(e.getSource() == message){
+            actionSend();
+        }
+        else {
+            switch (e.getActionCommand()) {
+                case "Refresh":
+                    if (model.isConversationNeedUpdate()) {
+                        model.setConversationNeedUpdate(false);
+                        refreshEntireConversation();
                     }
-                }
-            break;
-				
-		}
-		
+                    break;
+
+                case "Send":
+                    actionSend();
+                    break;
+                case "Send a File":
+                    if (selectedRemoteUser == null)
+                        System.out.println("Aucun utilisateur selectionne.");
+                    else if (!selectedRemoteUser.isConnected())
+                        System.out.println("L'utilisateur selectionne est deconnecte.");
+                    else {
+                        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
+                        }
+                    }
+                    break;
+            }
+        }
 	}
+
+    private void actionSend() {
+        if (selectedRemoteUser == null)
+            System.out.println("Aucun utilisateur selectionne.");
+        else if (!selectedRemoteUser.isConnected())
+            System.out.println("L'utilisateur selectionne est deconnecte.");
+        else if (message.getText().equals("")) {
+            //do nothing
+        } else {
+            Controller.getInstance().sendText(message.getText(), selectedRemoteUser);
+            message.setText("");
+        }
+    }
 }

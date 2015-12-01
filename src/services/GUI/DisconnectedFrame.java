@@ -91,6 +91,5 @@ public class DisconnectedFrame extends JFrame{
     }
     public void addActionUsername(ActionListener actionListener){
         usernameTextFiel.addActionListener(actionListener);
-
     }
 }
