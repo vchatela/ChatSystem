@@ -49,6 +49,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
 
         message = new JTextField();
         message.addActionListener(this);
+        message.setActionCommand("Send");
         b1.add(message,BorderLayout.CENTER);
 
         JPanel b2 = new JPanel();
@@ -91,8 +92,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
                 s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
             }
             else if(m.getClass()==Model.FileMsg.class) {
-                s= s+"Getting a file ! Will be implemented soon.." + System.lineSeparator() + System.lineSeparator();
-
+                s= s+"Getting a file ! Will be implemented soon..." + System.lineSeparator() + System.lineSeparator();
             }
         }
         this.conversation.setText(s);
@@ -109,33 +109,28 @@ public class ConversationComponent extends JComponent implements ActionListener{
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == message){
-            actionSend();
-        }
-        else {
-            switch (e.getActionCommand()) {
-                case "Refresh":
-                    if (model.isConversationNeedUpdate()) {
-                        model.setConversationNeedUpdate(false);
-                        refreshEntireConversation();
-                    }
-                    break;
+        switch (e.getActionCommand()) {
+            case "Refresh":
+                if (model.isConversationNeedUpdate()) {
+                    model.setConversationNeedUpdate(false);
+                    refreshEntireConversation();
+                }
+                break;
 
-                case "Send":
-                    actionSend();
-                    break;
-                case "Send a File":
-                    if (selectedRemoteUser == null)
-                        System.out.println("Aucun utilisateur selectionne.");
-                    else if (!selectedRemoteUser.isConnected())
-                        System.out.println("L'utilisateur selectionne est deconnecte.");
-                    else {
-                        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                            Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
-                        }
+            case "Send":
+                actionSend();
+                break;
+            case "Send a File":
+                if (selectedRemoteUser == null)
+                    System.out.println("Aucun utilisateur selectionne.");
+                else if (!selectedRemoteUser.isConnected())
+                    System.out.println("L'utilisateur selectionne est deconnecte.");
+                else {
+                    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                        Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
                     }
-                    break;
-            }
+                }
+                break;
         }
 	}
 

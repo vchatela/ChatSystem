@@ -67,7 +67,7 @@ public class ChatGUI {
     }
     private void changeToConnectedFrame(){
         if(disconnectedFrame.getUserName().equals("")){
-            ToastMessage toastMessage = new ToastMessage("Need to insert a real username ",3000);
+            ToastMessage toastMessage = new ToastMessage("Invalid username ",3000);
             toastMessage.setVisible(true);
         }
         else{

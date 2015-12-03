@@ -12,14 +12,15 @@ import java.util.HashMap;
  */
 public class SenderTCP extends Thread{
     //Static attributes
+    public static enum State {waiting_for_file, waiting_for_accept, sending_file, file_transferred, file_refused, error};
     private static final int BUFFER_SIZE = 4096;
     private static HashMap<Integer,SenderTCP> instances = new HashMap<>();
-    public static enum State {waiting_for_file, waiting_for_accept, sending_file, file_transfered, file_refused, error};
-    private long fileLength=0;
-    private long bytesSent=0;
+
 
     //Attributes
     private Socket clientSocket;
+    private long fileLength=0;
+    private long bytesSent=0;
     private State state = State.waiting_for_file;
     DataInputStream input;
     DataOutputStream output;
@@ -65,28 +66,11 @@ public class SenderTCP extends Thread{
     }
 
     public void run(){
-        while(true)
-        {
-            switch (state)
-            {
-                case waiting_for_file:
-                    waitFile();
-                    break;
-
-                case waiting_for_accept:
-                    waitAccept();
-                    break;
-
-                case sending_file:
-                    send();
-                    break;
-
-                default:
-                    close();
-                    break;
-            }
-        }
-        
+        waitFile();
+        waitAccept();
+        if (state==State.sending_file)
+            send();
+        close();
     }
 
     private void waitFile()
@@ -139,7 +123,7 @@ public class SenderTCP extends Thread{
                 bytesToSend = (int) Math.min(((long)4096), (fileLength - bytesSent));
             }
 
-            state=State.file_transfered;
+            state=State.file_transferred;
             System.out.println("SenderTCP : file sent");
             
             bis.close();
@@ -156,7 +140,11 @@ public class SenderTCP extends Thread{
 
     private void close()
     {
-        //TODO
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public long getFileLength() {

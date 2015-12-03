@@ -69,7 +69,7 @@ public class Controller {
         //Updating the model
         int index = model.getUserList().indexOf(receiver);
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        conversation.add (new Model.FileMsg(f, localUser, key));
+        conversation.add (new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.ToRemoveUser));
         model.setConversationNeedUpdate(true);
     }
 
@@ -77,7 +77,7 @@ public class Controller {
         //Updating the model
         int index = model.getUserList().indexOf(model.findUser(addr));
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        conversation.add (new Model.FileMsg(null, localUser, key));
+        conversation.add (new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.FromRemoteUser));
         model.setConversationNeedUpdate(true);
 
 

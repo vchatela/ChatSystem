@@ -16,6 +16,10 @@ public class ReceiverTCP extends Thread {
     private long fileLength=0;
     private long bytesReceived=0;
 
+	private boolean permissionAck=false;
+	private boolean fileAccepted;
+	private String filePath;
+
     private ReceiverTCP(int key) {
         instances.put(key,this);
     }
@@ -33,45 +37,74 @@ public class ReceiverTCP extends Thread {
         this.clientSocket = clientSocket;
     }
 
+	public synchronized void acceptFile(String path) {
+		permissionAck = true;
+		fileAccepted = true;
+		filePath = path;
+		notify();
+	}
+
+	public synchronized void refuseFile() {
+		permissionAck = true;
+		fileAccepted = false;
+		notify();
+	}
+
     public void run(){
         try {
 			DataInputStream input = new DataInputStream( clientSocket.getInputStream());
 			DataOutputStream output =new DataOutputStream( clientSocket.getOutputStream());
 			
 			
-			String s = "/home/jacques/Documents/" + input.readUTF();
+			String s = input.readUTF();
 			fileLength = input.readLong();
+
 			
-	    	file = new File(s);
-			file.createNewFile();
-			
-			//Accept
-			output.writeBoolean(true);
-			
-			FileOutputStream fos = new FileOutputStream(s);
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			
-			
-			byte[] bytes = new byte[BUFFER_SIZE];
-			
-			int count;
-		    while (bytesReceived < fileLength) {
-		    	count = input.read(bytes);
-			    System.out.flush();
-		        bos.write(bytes, 0, count);
-		        bos.flush();
-		        
-		        bytesReceived += count;
-		    }
-		    System.out.flush();
-			
-			input.close();
-			output.close();
-			
-		} catch (Exception e1) {
+			//Waiting for accept
+			synchronized (this)
+			{
+				while (permissionAck == false)
+				{
+					wait();
+				}
+			}
+
+
+			if (fileAccepted) {
+				output.writeBoolean(true);
+
+				file = new File(filePath + s);
+				file.createNewFile();
+
+				FileOutputStream fos = new FileOutputStream(s);
+				BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+
+				byte[] bytes = new byte[BUFFER_SIZE];
+
+				int count;
+				while (bytesReceived < fileLength) {
+					count = input.read(bytes);
+					System.out.flush();
+					bos.write(bytes, 0, count);
+					bos.flush();
+
+					bytesReceived += count;
+				}
+				System.out.flush();
+
+				input.close();
+				output.close();
+			}
+			else {
+				output.writeBoolean(false);
+			}
+
+			} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
 
     	
     	

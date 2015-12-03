@@ -77,19 +77,21 @@ public class Model {
 		}
 	}
 	public static class FileMsg extends Msg{
+		public static enum TransferType {ToRemoveUser, FromRemoteUser};
 
-		private File file;
-		private int key;
-		public FileMsg(File file, User sender, int key) {
+		private TransferType transferType;
+		private int hashcodeTCP;
+
+		public FileMsg(User sender, int hashcodeTCP, TransferType transferType) {
 			super(sender);
-			this.file = file;
-			this.key = key;
+			this.hashcodeTCP = hashcodeTCP;
+			this.transferType = transferType;
 		}
-		public int getKey() {
-			return key;
+		public int getHashcodeTCP() {
+			return hashcodeTCP;
 		}
-		public File getFile() {
-			return file;
+		public TransferType getTransferType() {
+			return transferType;
 		}
 	}
 

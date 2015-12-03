@@ -136,7 +136,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-        int answer = JOptionPane.showConfirmDialog(null, "You want to quit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int answer = JOptionPane.showConfirmDialog(null, "Do you want to quit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (answer == JOptionPane.YES_OPTION) {
             dispose();
             System.exit(0);
