@@ -31,11 +31,11 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
             if (receiverTCP.ackGiven())
             {
                 float percentage = receiverTCP.getBytesReceived() /receiverTCP.getFileLength() * 100;
-                renderer.setText("Réception de \"" + receiverTCP.getFileName() + "\" ... " + percentage + "%");
+                renderer.setText("Réception de \"" + receiverTCP.getFileName().substring(0,receiverTCP.getFileName().length()>10 ? 10:receiverTCP.getFileName().length()) + "\" ... " + percentage + "%");
             }
             else
             {
-                renderer.setText("Réception de \"" + receiverTCP.getFileName() + "\" ... En attente");
+                renderer.setText("Réception de \"" + receiverTCP.getFileName().substring(0,receiverTCP.getFileName().length()>10 ? 10:receiverTCP.getFileName().length()) + "\" ... En attente");
             }
 
         }
@@ -43,7 +43,7 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
         {
             SenderTCP senderTCP = SenderTCP.getInstance(fileMsg.getHashcodeTCP());
             float percentage = senderTCP.getBytesSent()/senderTCP.getFileLength() * 100;
-            renderer.setText("Envoie de \"" + senderTCP.getFileName() + "\" ... " + percentage + "%");
+            renderer.setText("Envoi de \"" + senderTCP.getFileName().substring(0,senderTCP.getFileName().length()>10 ? 10:senderTCP.getFileName().length()) + "\" ... " + percentage + "%");
         }
 
 

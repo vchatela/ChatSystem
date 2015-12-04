@@ -101,6 +101,7 @@ public class ChatNetwork {
         {
             senderUDP.send(m, addr);
         }
+        System.out.println("Message sent by broadcast.");
     }
    
     public void processUDPPacket(DatagramPacket p)
@@ -110,8 +111,8 @@ public class ChatNetwork {
 		    ObjectInputStream oos = new ObjectInputStream(baos);
 			Controller.getInstance().processMessage((Message)oos.readObject(), p.getAddress());
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            System.out.println("ERROR : can't proceed the UDP packet.");
+            e.printStackTrace();
 		}
     }
     
