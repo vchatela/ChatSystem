@@ -2,6 +2,9 @@ package services;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -77,7 +80,7 @@ public class Model {
 		}
 	}
 	public static class FileMsg extends Msg{
-		public static enum TransferType {ToRemoveUser, FromRemoteUser};
+		public static enum TransferType {ToRemoteUser, FromRemoteUser};
 
 		private TransferType transferType;
 		private int hashcodeTCP;
@@ -99,8 +102,19 @@ public class Model {
 	//Attributes
 	private Vector<User> userList;
 	private Vector<Vector<Msg>> conversations;
+	private LinkedList<FileMsg> newFileTransferRequests;
 	private boolean userListNeedUpdate = false;
 	private boolean conversationNeedUpdate = false;
+
+	public boolean isFileTransferNeedUpdate() {
+		return fileTransferNeedUpdate;
+	}
+
+	public void setFileTransferNeedUpdate(boolean fileTransferNeedUpdate) {
+		this.fileTransferNeedUpdate = fileTransferNeedUpdate;
+	}
+
+	private boolean fileTransferNeedUpdate = false;
 
 	public boolean isUserListNeedUpdate() {
 		return userListNeedUpdate;
@@ -122,10 +136,15 @@ public class Model {
     public int getUserListSize(){
         return userList.size();
     }
-	
-    public Model(){
+
+	public LinkedList<FileMsg> getNewFileTransferRequests() {
+		return newFileTransferRequests;
+	}
+
+	public Model(){
     	userList = new Vector<>();
 		conversations = new Vector<>();
+		newFileTransferRequests = new LinkedList<>();
     }
     
     public void addUser(User u)
@@ -178,4 +197,8 @@ public class Model {
 		return u;
 	}
 
+	public void addFileTransferRequest(FileMsg fileMsg)
+	{
+		newFileTransferRequests.add(fileMsg);
+	}
 }

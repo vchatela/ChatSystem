@@ -14,11 +14,21 @@ public class ReceiverTCP extends Thread {
     
     File file;
     private long fileLength=0;
-    private long bytesReceived=0;
+
+	public long getBytesReceived() {
+		return bytesReceived;
+	}
+
+	private long bytesReceived=0;
+
+	public boolean ackGiven() {
+		return permissionAck;
+	}
 
 	private boolean permissionAck=false;
 	private boolean fileAccepted;
 	private String filePath;
+	private String fileName;
 
     private ReceiverTCP(int key) {
         instances.put(key,this);
@@ -50,13 +60,23 @@ public class ReceiverTCP extends Thread {
 		notify();
 	}
 
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public long getFileLength()
+	{
+		return fileLength;
+	}
+
     public void run(){
         try {
 			DataInputStream input = new DataInputStream( clientSocket.getInputStream());
 			DataOutputStream output =new DataOutputStream( clientSocket.getOutputStream());
 			
 			
-			String s = input.readUTF();
+			fileName = input.readUTF();
 			fileLength = input.readLong();
 
 			
@@ -73,10 +93,10 @@ public class ReceiverTCP extends Thread {
 			if (fileAccepted) {
 				output.writeBoolean(true);
 
-				file = new File(filePath + s);
+				file = new File(filePath + fileName);
 				file.createNewFile();
 
-				FileOutputStream fos = new FileOutputStream(s);
+				FileOutputStream fos = new FileOutputStream(file);
 				BufferedOutputStream bos = new BufferedOutputStream(fos);
 
 
@@ -105,9 +125,6 @@ public class ReceiverTCP extends Thread {
 			e1.printStackTrace();
 		}
 
-
-    	
-    	
     	//File transfer is terminated, closing connection
     	try {
 			clientSocket.close();

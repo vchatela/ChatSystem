@@ -154,4 +154,9 @@ public class SenderTCP extends Thread{
     public long getBytesSent() {
         return bytesSent;
     }
+
+    public String getFileName()
+    {
+        return  file.getName();
+    }
 }

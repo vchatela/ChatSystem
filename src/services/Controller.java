@@ -37,6 +37,7 @@ public class Controller {
             return;
 
 		localUser = new User((nickname + "@" +InetAddress.getLocalHost().getHostName()), InetAddress.getLocalHost());
+        System.out.println("Sending hello");
         ChatNetwork.getInstance().sendHello(localUser.getNickname());
         connected = true;
     }
@@ -69,18 +70,25 @@ public class Controller {
         //Updating the model
         int index = model.getUserList().indexOf(receiver);
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        conversation.add (new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.ToRemoveUser));
+
+        Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.ToRemoteUser);
+        conversation.add (fileMsg);
         model.setConversationNeedUpdate(true);
+
+        model.setFileTransferNeedUpdate(true);
+        model.addFileTransferRequest(fileMsg);
     }
 
     public void processPermissionForFileTransfer(int key, InetAddress addr) {
         //Updating the model
         int index = model.getUserList().indexOf(model.findUser(addr));
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        conversation.add (new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.FromRemoteUser));
+        Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.FromRemoteUser);
+        conversation.add (fileMsg);
         model.setConversationNeedUpdate(true);
 
-
+        model.setFileTransferNeedUpdate(true);
+        model.addFileTransferRequest(fileMsg);
     }
     
     public void processMessage(Message m, InetAddress addr){

@@ -1,7 +1,9 @@
 package services.GUI;
 
+import javafx.stage.FileChooser;
 import services.Model;
 import services.network.ChatNetwork;
+import services.network.tcp.ReceiverTCP;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -9,6 +11,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Vector;
 
 /**
@@ -21,7 +25,8 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
     //J
     private JList<Model.User> listUser;
-    private JList<String> listFilesWaiting; // TODO !!!
+    private JList<Model.FileMsg> fileTransferJList; // TODO !!!
+    private Vector<Model.FileMsg> fileTransferVector;
     private JTabbedPane tabbedPane;
     private JButton disconnectButton;
     private Vector<Model.User> openedTab;
@@ -60,14 +65,50 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         j.add(listScroller,BorderLayout.CENTER);
 
         //JList Files
-        listFilesWaiting = new JList<>();
-        listFilesWaiting.addListSelectionListener(this); // TODO
-        listFilesWaiting.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        listFilesWaiting.setLayoutOrientation(JList.VERTICAL);
-        listFilesWaiting.setVisibleRowCount(-1);
-        JScrollPane listScrollerFiles = new JScrollPane(listFilesWaiting);
+        fileTransferVector = new Vector<Model.FileMsg>();
+        fileTransferJList = new JList<Model.FileMsg>();
+        fileTransferJList.addListSelectionListener(this); // TODO
+        fileTransferJList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        fileTransferJList.setLayoutOrientation(JList.VERTICAL);
+        fileTransferJList.setVisibleRowCount(-1);
+
+        FileListCellRenderer cellRenderer = new FileListCellRenderer();
+        fileTransferJList.setCellRenderer(cellRenderer);
+        JScrollPane listScrollerFiles = new JScrollPane(fileTransferJList);
         listScrollerFiles.setPreferredSize(new Dimension(250, 80));
         j.add(listScrollerFiles,BorderLayout.PAGE_END);
+
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent mouseEvent) {
+                JList theList = (JList) mouseEvent.getSource();
+                if (mouseEvent.getClickCount() == 2) {
+                    int index = theList.locationToIndex(mouseEvent.getPoint());
+                    if (index >= 0) {
+                        Model.FileMsg fileMsg = (Model.FileMsg) theList.getModel().getElementAt(index);
+                        if(fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
+                        {
+                            ReceiverTCP receiverTCP = ReceiverTCP.getInstance(fileMsg.getHashcodeTCP());
+                            if (!receiverTCP.ackGiven())
+                            {
+                                JFileChooser fc = new JFileChooser();
+                                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                                fc.setAcceptAllFileFilterUsed(false);
+
+                                if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                                    try {
+                                        receiverTCP.acceptFile(fc.getSelectedFile().getCanonicalPath());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        fileTransferJList.addMouseListener(mouseListener);
 
         add(j,BorderLayout.LINE_END);
 
@@ -90,7 +131,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
     private void closeProgram(){
         if(JOptionPane.showConfirmDialog(null,
-                "Do you wanna Disconnect?",
+                "Do you want to Disconnect?",
                 "Choose",
                 JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
             try {
@@ -116,6 +157,20 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                 if (model.isUserListNeedUpdate()){
                     refreshUserList();
                     model.setUserListNeedUpdate(false);
+                }
+
+                if (model.isFileTransferNeedUpdate())
+                {
+                    LinkedList<Model.FileMsg> fileMsgs = model.getNewFileTransferRequests();
+
+
+                    while (!fileMsgs.isEmpty())
+                    {
+                        fileTransferVector.addElement(fileMsgs.pollLast());
+                    }
+
+                    fileTransferJList.setListData(fileTransferVector);
+                    model.setFileTransferNeedUpdate(false);
                 }
                 break;
 		}

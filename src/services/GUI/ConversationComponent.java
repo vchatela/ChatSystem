@@ -24,7 +24,6 @@ public class ConversationComponent extends JComponent implements ActionListener{
     private JButton jSendFile;
     private final static int sizeCutMessage = 70;
 
-
     // TODO : when someone quit we need to block the message text
 
     //Other tools
@@ -71,6 +70,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
         b3.add(b1,BorderLayout.CENTER);
         b3.add(b2,BorderLayout.LINE_END);
 
+
         add(b3,BorderLayout.PAGE_END);
 
         Timer refreshTimer = new Timer(100, this);
@@ -79,7 +79,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
 
     }
     
-    private void refreshEntireConversation()
+    synchronized private void refreshEntireConversation()
     {
         int index = model.getUserList().indexOf(selectedRemoteUser);
         if (index==-1)
@@ -92,9 +92,19 @@ public class ConversationComponent extends JComponent implements ActionListener{
                 s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
             }
             else if(m.getClass()==Model.FileMsg.class) {
-                s= s+"Getting a file ! Will be implemented soon..." + System.lineSeparator() + System.lineSeparator();
+                Model.FileMsg fileMsg = (Model.FileMsg)m;
+                if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
+                {
+                    s= s+"Remote user asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
+                }
+                else
+                {
+                    s= s+"You asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
+
+                }
             }
         }
+
         this.conversation.setText(s);
     }
     public String formatMessage(String value){
