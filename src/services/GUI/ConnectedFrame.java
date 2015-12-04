@@ -1,6 +1,5 @@
 package services.GUI;
 
-import javafx.stage.FileChooser;
 import services.Model;
 import services.network.ChatNetwork;
 import services.network.tcp.ReceiverTCP;
@@ -11,7 +10,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -22,6 +20,10 @@ import java.util.Vector;
 public class ConnectedFrame extends JFrame implements ActionListener, WindowListener,ListSelectionListener{
 
     private Model model;
+
+    public JList<Model.User> getListUser() {
+        return listUser;
+    }
 
     //J
     private JList<Model.User> listUser;
@@ -36,9 +38,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         this.model = model;
 
         setLayout(new BorderLayout());
-
-        //TabbedPane
-        openedTab = new Vector<>();
 
         tabbedPane = new JTabbedPane();
         add(tabbedPane,BorderLayout.CENTER);
@@ -172,6 +171,13 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                     fileTransferJList.setListData(fileTransferVector);
                     model.setFileTransferNeedUpdate(false);
                 }
+                if(model.isNeedToOpenATab()){
+                    Model.User user = model.getUsertabToOpen();
+                    createNewTab(user);
+                    //on oublie pas de le reset
+                    model.setUsertabToOpen(null);
+                    model.setNeedToOpenATab(false);
+                }
                 break;
 		}
 		
@@ -228,18 +234,22 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         if (!e.getValueIsAdjusting()) {
             if (listUser.getSelectedIndex() != -1) {
                 // TODO : check if user tab already exist and open this one !
-                if(openedTab.indexOf(listUser.getSelectedValue()) != -1){
+                if(model.getUserListOpenedTab().indexOf(listUser.getSelectedValue()) != -1){
                     // open the tab at indexOf
                 }
                 else {
                     // else create it
-                    JComponent panel1;
-                    panel1 = new ConversationComponent(model, listUser.getSelectedValue());
-                    panel1.setSize(500, 500);
-                    openedTab.add(listUser.getSelectedValue());
-                    tabbedPane.addTab(listUser.getSelectedValue().getNickname(), null, panel1); //TODO : manage null
+                    createNewTab(listUser.getSelectedValue());
                 }
             }
-        }		
+        }
 	}
+    private void createNewTab(Model.User user){
+        JComponent panel1;
+        panel1 = new ConversationComponent(model, user);
+        panel1.setSize(500, 500);
+        model.getUserListOpenedTab().add(user);
+        model.isConversationNeedUpdate();
+        tabbedPane.addTab(user.getNickname(), null, panel1);
+    }
 }

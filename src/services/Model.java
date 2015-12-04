@@ -1,10 +1,7 @@
 package services;
 
-import java.io.File;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -99,8 +96,14 @@ public class Model {
 	}
 
 
-	//Attributes
+	//Class Attributes
 	private Vector<User> userList;
+
+	public Vector<User> getUserListOpenedTab() {
+		return userListOpenedTab;
+	}
+
+	private Vector<User> userListOpenedTab;
 	private Vector<Vector<Msg>> conversations;
 	private LinkedList<FileMsg> newFileTransferRequests;
 	private boolean userListNeedUpdate = false;
@@ -116,14 +119,20 @@ public class Model {
 
 	private boolean fileTransferNeedUpdate = false;
 
+	public boolean isNeedToOpenATab() {return needToOpenATab;}
+	public void setNeedToOpenATab(boolean needToOpenATab) {this.needToOpenATab = needToOpenATab;}
+	private boolean needToOpenATab = false;
+
+	public User getUsertabToOpen() {return usertabToOpen;}
+	public void setUsertabToOpen(User usertabToOpen) {	this.usertabToOpen = usertabToOpen;}
+	private User usertabToOpen;
+
 	public boolean isUserListNeedUpdate() {
 		return userListNeedUpdate;
 	}
-
 	public void setUserListNeedUpdate(boolean userListNeedUpdate) {
 		this.userListNeedUpdate = userListNeedUpdate;
 	}
-
 	public boolean isConversationNeedUpdate() {
 		return conversationNeedUpdate;
 	}
@@ -145,6 +154,7 @@ public class Model {
     	userList = new Vector<>();
 		conversations = new Vector<>();
 		newFileTransferRequests = new LinkedList<>();
+		userListOpenedTab = new Vector<>();
     }
     
     public void addUser(User u)

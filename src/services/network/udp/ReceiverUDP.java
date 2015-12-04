@@ -1,14 +1,10 @@
 package services.network.udp;
 
-import java.io.ByteArrayInputStream;
+import services.network.ChatNetwork;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-
-import services.Message;
-import services.network.ChatNetwork;
 
 /**
  * Created by ValentinC on 22/10/2015.

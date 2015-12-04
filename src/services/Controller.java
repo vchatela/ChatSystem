@@ -1,14 +1,12 @@
 package services;
 
+import services.Model.User;
+import services.network.ChatNetwork;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Vector;
-
-import services.GUI.ChatGUI;
-import services.Model.User;
-import services.network.ChatNetwork;
 
 /**
  * Created by ValentinC on 21/10/2015.
@@ -111,7 +109,7 @@ public class Controller {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-                //TODO open new "Comunica System"
+                // TODO If the user was previously open (tab), allow again to send message to him
     			break;
     			
     		case helloAck:
@@ -130,12 +128,19 @@ public class Controller {
                 Model.TextMsg t = new Model.TextMsg(m.getData(), user);
                 conversation.add(t);
                 model.setConversationNeedUpdate(true);
+                //if the user's conversation tab is not opened do it
+                if(model.getUserListOpenedTab().indexOf(user)==-1){
+                    model.setNeedToOpenATab(true);
+                    model.setUsertabToOpen(user);
+                }
     			break;
     			
 			case bye:
                 //TODO be carreful : add/get info from a hashmap containing the addr AND the username
                 System.out.println("Goodbye received from : " + addr); //same for info : put nickname !
                 model.remoteUserDisconnect(addr);
+                //TODO if user disconnect, we need to block sending message to him
+
 				break;
     			
     	}

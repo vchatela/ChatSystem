@@ -1,15 +1,14 @@
 package services.GUI;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.util.Objects;
-
 import services.Controller;
 import services.Model;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * Created by Lucas on 31/10/2015.

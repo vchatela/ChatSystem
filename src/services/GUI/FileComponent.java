@@ -1,6 +1,5 @@
 package services.GUI;
 
-import services.Controller;
 import services.Model;
 import services.network.tcp.ReceiverTCP;
 
