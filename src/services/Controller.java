@@ -6,7 +6,6 @@ import services.network.ChatNetwork;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Vector;
 
 /**
@@ -107,19 +106,21 @@ public class Controller {
         switch (m.getHeader())
     	{
     		case hello:
-    			model.addUser(new User(m.getData(), addr));
+                if(!getLocalUser().getNickname().equals(m.getData()))
+    			    model.addUser(new User(m.getData(), addr));
                 try {
 					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), addr);
                     System.out.println("Hello received from : " + m.getData());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+                    System.out.println("ERROR : While sending Hello ack to " + localUser.getNickname());
+                    e.printStackTrace();
 				}
                 // TODO If the user was previously open (tab), allow again to send message to him
     			break;
     			
     		case helloAck:
-    			model.addUser(new User(m.getData(), addr));
+                if(!getLocalUser().getNickname().equals(m.getData()))
+    			    model.addUser(new User(m.getData(), addr));
                 System.out.println("HelloAck received from : " + m.getData());
     			break;
     			
@@ -146,7 +147,6 @@ public class Controller {
                 System.out.println("Goodbye received from : " + addr); //same for info : put nickname !
                 model.remoteUserDisconnect(addr);
                 //TODO if user disconnect, we need to block sending message to him
-
 				break;
     			
     	}

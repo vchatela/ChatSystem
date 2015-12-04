@@ -60,7 +60,7 @@ public class ChatGUI {
                 connectedFrame.setVisible(true);
             } catch (IOException e) {
                 e.printStackTrace();
-                //TODO !!
+                System.out.println("ERROR : Can't connect with username : " + username);
             }
         }
     }

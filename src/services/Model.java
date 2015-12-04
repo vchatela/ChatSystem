@@ -159,7 +159,6 @@ public class Model {
     
     public void addUser(User u)
     {
-        //TODO : check if it's working
     	if (!userList.contains(u))
 		{
 			userList.add(u);

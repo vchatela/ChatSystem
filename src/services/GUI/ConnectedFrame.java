@@ -136,6 +136,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
             try {
                 ChatNetwork.getInstance().sendBye();
             } catch (IOException e1) {
+                System.out.println("Error during Sending bye !");
                 e1.printStackTrace();
             }
             dispose();

@@ -1,13 +1,5 @@
 package services.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
 import services.Controller;
 import services.Message;
 import services.network.tcp.ReceiverTCP;
@@ -15,6 +7,14 @@ import services.network.tcp.SenderTCP;
 import services.network.tcp.ServerTCP;
 import services.network.udp.ReceiverUDP;
 import services.network.udp.SenderUDP;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * Created by ValentinC on 22/10/2015.
@@ -38,7 +38,6 @@ public class ChatNetwork {
             serverTCP = new ServerTCP();
             serverTCP.start();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Error : " + e.toString());
 		}
 
@@ -74,8 +73,8 @@ public class ChatNetwork {
     	try {
 			senderUDP.send(m, addr);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            System.out.println("ERROR : can't send to "+addr);
+            e.printStackTrace();
 		}
     }
     
@@ -93,7 +92,6 @@ public class ChatNetwork {
     {
     	Message m = Message.createHelloAck(nickname);
 		senderUDP.send(m, addr);
-
     }
 
     public void sendBye() throws IOException
@@ -115,13 +113,11 @@ public class ChatNetwork {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
     }
     
     public ArrayList<InetAddress> getBroadList() throws SocketException{
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();    
         ArrayList<InetAddress> broadcastList = new ArrayList<InetAddress>();
-        // récupération de toutes les adresses de broadcast
         while(interfaces.hasMoreElements()) {
             NetworkInterface networkInterface = interfaces.nextElement();
             if (networkInterface.isLoopback())
