@@ -131,11 +131,11 @@ public class SenderTCP extends Thread{
 
         }
         catch (IOException e) {
-        e.printStackTrace();
-        state = State.error;
-    }
-
-
+            e.printStackTrace();
+            state = State.error;
+        }
+        fileLength=0;
+        bytesSent=0;
     }
 
     private void close()

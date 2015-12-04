@@ -11,6 +11,8 @@ import java.awt.*;
  * Created by Admin on 03/12/2015.
  */
 public class FileListCellRenderer extends DefaultListCellRenderer{
+    JLabel renderer;
+    Model.FileMsg fileMsg;
     public FileListCellRenderer() {
         super();
     }
@@ -18,12 +20,9 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        JLabel renderer = (JLabel) super.getListCellRendererComponent(list, value, index,
+        renderer = (JLabel) super.getListCellRendererComponent(list, value, index,
                 isSelected, cellHasFocus);
-
-        Model.FileMsg fileMsg = (Model.FileMsg)value;
-
-
+        fileMsg = (Model.FileMsg)value;
         if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
         {
             ReceiverTCP receiverTCP = ReceiverTCP.getInstance(fileMsg.getHashcodeTCP());
@@ -31,11 +30,10 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
             if (receiverTCP.ackGiven())
             {
                 float percentage = receiverTCP.getBytesReceived() /receiverTCP.getFileLength() * 100;
-                renderer.setText("Réception de \"" + receiverTCP.getFileName().substring(0,receiverTCP.getFileName().length()>10 ? 10:receiverTCP.getFileName().length()) + "\" ... " + percentage + "%");
-            }
+                renderer.setText("Réception de \"" + receiverTCP.getFileName() + "\" ... " + percentage + "%");}
             else
             {
-                renderer.setText("Réception de \"" + receiverTCP.getFileName().substring(0,receiverTCP.getFileName().length()>10 ? 10:receiverTCP.getFileName().length()) + "\" ... En attente");
+                renderer.setText("Réception de \"" + receiverTCP.getFileName() + "\" ... En attente");
             }
 
         }
@@ -43,10 +41,8 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
         {
             SenderTCP senderTCP = SenderTCP.getInstance(fileMsg.getHashcodeTCP());
             float percentage = senderTCP.getBytesSent()/senderTCP.getFileLength() * 100;
-            renderer.setText("Envoi de \"" + senderTCP.getFileName().substring(0,senderTCP.getFileName().length()>10 ? 10:senderTCP.getFileName().length()) + "\" ... " + percentage + "%");
+            renderer.setText("Envoi de \"" + senderTCP.getFileName() + "\" ... " + percentage + "%");
         }
-
-
         return renderer;
     }
 }

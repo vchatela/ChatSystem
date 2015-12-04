@@ -74,12 +74,10 @@ public class ReceiverTCP extends Thread {
         try {
 			DataInputStream input = new DataInputStream( clientSocket.getInputStream());
 			DataOutputStream output =new DataOutputStream( clientSocket.getOutputStream());
-			
-			
+
 			fileName = input.readUTF();
 			fileLength = input.readLong();
 
-			
 			//Waiting for accept
 			synchronized (this)
 			{
@@ -123,7 +121,7 @@ public class ReceiverTCP extends Thread {
 			} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+			}
 
     	//File transfer is terminated, closing connection
     	try {
@@ -132,5 +130,7 @@ public class ReceiverTCP extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		fileLength = 0;
+		bytesReceived = 0;
     }
 }
