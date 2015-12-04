@@ -169,7 +169,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                     }
 
                     fileTransferJList.setListData(fileTransferVector);
-                    model.setFileTransferNeedUpdate(false);
+                    //model.setFileTransferNeedUpdate(false);
                 }
                 if(model.isNeedToOpenATab()){
                     Model.User user = model.getUsertabToOpen();

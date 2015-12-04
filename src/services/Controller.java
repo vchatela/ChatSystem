@@ -6,6 +6,7 @@ import services.network.ChatNetwork;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 /**
@@ -95,10 +96,15 @@ public class Controller {
             return;
 
         //TODO manage localhost later - if one addr == one of localhost addr
-        // if (addr == InetAddress.getLocalhost()
-        //        return;
-        //
-    	switch (m.getHeader())
+        /*try {
+            if (addr.equals(InetAddress.getLocalHost()))
+                    return;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }*/
+
+
+        switch (m.getHeader())
     	{
     		case hello:
     			model.addUser(new User(m.getData(), addr));

@@ -96,6 +96,8 @@ public class ReceiverTCP extends Thread {
 				file = new File(filePath + fileName);
 				file.createNewFile();
 
+				System.out.println("Oui le fichier est créé ! : " + filePath + fileName);
+
 				FileOutputStream fos = new FileOutputStream(file);
 				BufferedOutputStream bos = new BufferedOutputStream(fos);
 
