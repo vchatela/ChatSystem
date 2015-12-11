@@ -63,6 +63,7 @@ public class ChatGUI {
                 System.out.println("ERROR : Can't connect with username : " + username);
             }
         }
+        model.addObserver(connectedFrame);
     }
     private void changeToConnectedFrame(){
         if(disconnectedFrame.getUserName().equals("")){

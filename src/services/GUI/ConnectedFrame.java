@@ -12,13 +12,15 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
 
 /**
  * Created by Lucas on 31/10/2015.
  *
  */
-public class ConnectedFrame extends JFrame implements ActionListener, WindowListener,ListSelectionListener{
+public class ConnectedFrame extends JFrame implements ActionListener, WindowListener,ListSelectionListener, Observer {
 
     private Model model;
 
@@ -32,7 +34,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
     public ConnectedFrame(Model model)
     {
         this.model = model;
-
         setLayout(new BorderLayout());
 
         tabbedPane = new JTabbedPane();
@@ -178,13 +179,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                     fileTransferJList.setListData(fileTransferVector);
                     //model.setFileTransferNeedUpdate(false);
                 }
-                if(model.isNeedToOpenATab()){
-                    Model.User user = model.getUsertabToOpen();
-                    createNewTab(user);
-                    //on oublie pas de le reset
-                    model.setUsertabToOpen(null);
-                    model.setNeedToOpenATab(false);
-                }
                 break;
 		}
 		
@@ -235,5 +229,13 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         model.getUserListOpenedTab().add(user);
         model.isConversationNeedUpdate();
         tabbedPane.addTab(user.getNickname(), null, panel1);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Model.User user = model.getUsertabToOpen();
+        createNewTab(user);
+        //on oublie pas de le reset
+        model.setUsertabToOpen(null);
     }
 }

@@ -2,13 +2,14 @@ package services;
 
 import java.net.InetAddress;
 import java.util.LinkedList;
+import java.util.Observable;
 import java.util.Vector;
 
 /**
  * Created by ValentinC on 21/10/2015.
  *
  */
-public class Model {
+public class Model extends Observable{
 
 	//Classes
 	public static class User{
