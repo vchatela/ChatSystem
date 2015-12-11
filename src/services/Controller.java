@@ -138,6 +138,7 @@ public class Controller {
 
                 Model.TextMsg t = new Model.TextMsg(m.getData(), user);
                 conversation.add(t);
+                //TODO : notify by observer
                 model.setConversationNeedUpdate(true);
                 //if the user's conversation tab is not opened do it
                 if(model.getUserListOpenedTab().indexOf(user)==-1){
@@ -147,14 +148,12 @@ public class Controller {
     			break;
     			
 			case bye:
-                //TODO be carreful : add/get info from a hashmap containing the addr AND the username
                 if(!getLocalUser().getNickname().equals(m.getData())) {
                     System.out.println("[UDP] - Goodbye received from : " + addr); //same for info : put nickname !
                     model.remoteUserDisconnect(addr);
                 }
                 //TODO if user disconnect, we need to block sending message to him
 				break;
-    			
     	}
     }
 

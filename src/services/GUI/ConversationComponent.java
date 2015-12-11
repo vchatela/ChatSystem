@@ -123,6 +123,14 @@ public class ConversationComponent extends JComponent implements ActionListener{
                     model.setConversationNeedUpdate(false);
                     refreshEntireConversation();
                 }
+                if(!selectedRemoteUser.isConnected()) {
+                    jSend.setEnabled(false);
+                    jSendFile.setEnabled(false);
+                }
+                else {
+                    jSend.setEnabled(true);
+                    jSendFile.setEnabled(true);
+                }
                 break;
 
             case "Send":
