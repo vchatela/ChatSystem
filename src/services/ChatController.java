@@ -12,19 +12,19 @@ import java.util.Vector;
  * Created by ValentinC on 21/10/2015.
  *
  */
-public class Controller {
+public class ChatController {
 	
 	private Model model;
     private User localUser;
     private boolean connected = false;
 
-    private static Controller instance = new Controller();
+    private static ChatController instance = new ChatController();
 
     public int getNbrUser(){
         return model.getUserListSize();
     }
 
-    private Controller(){
+    private ChatController(){
     	model = new Model();
     }
     
@@ -40,7 +40,7 @@ public class Controller {
         connected = true;
     }
     
-    public static Controller getInstance()
+    public static ChatController getInstance()
     {
     	return instance;
     }

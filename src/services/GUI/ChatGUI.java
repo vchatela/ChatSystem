@@ -1,6 +1,6 @@
 package services.GUI;
 
-import services.Controller;
+import services.ChatController;
 import services.Model;
 
 import javax.swing.*;
@@ -56,7 +56,7 @@ public class ChatGUI {
         }
         else {
             try {
-                Controller.getInstance().Connect(username);
+                ChatController.getInstance().Connect(username);
                 connectedFrame.setVisible(true);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -71,7 +71,7 @@ public class ChatGUI {
         }
         else{
             try {
-                Controller.getInstance().Connect(disconnectedFrame.getUserName());
+                ChatController.getInstance().Connect(disconnectedFrame.getUserName());
                 disconnectedFrame.setVisible(false);
                 connectedFrame.refreshUserList();
                 connectedFrame.setVisible(true);

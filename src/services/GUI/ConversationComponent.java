@@ -1,6 +1,6 @@
 package services.GUI;
 
-import services.Controller;
+import services.ChatController;
 import services.Model;
 
 import javax.swing.*;
@@ -143,7 +143,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
                     System.out.println("L'utilisateur selectionne est deconnecte.");
                 else {
                     if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                        Controller.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
+                        ChatController.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
                     }
                 }
                 break;
@@ -158,7 +158,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
         else if (message.getText().equals("")) {
             //do nothing
         } else {
-            Controller.getInstance().sendText(message.getText(), selectedRemoteUser);
+            ChatController.getInstance().sendText(message.getText(), selectedRemoteUser);
             message.setText("");
         }
     }

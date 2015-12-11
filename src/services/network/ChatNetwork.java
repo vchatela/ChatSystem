@@ -1,6 +1,6 @@
 package services.network;
 
-import services.Controller;
+import services.ChatController;
 import services.Message;
 import services.network.tcp.ReceiverTCP;
 import services.network.tcp.SenderTCP;
@@ -57,7 +57,7 @@ public class ChatNetwork {
         ReceiverTCP receiver = ReceiverTCP.getInstance(hashcodeTCPReceiver);
         receiver.setClientSocket(socket);
         receiver.start();
-        Controller.getInstance().processPermissionForFileTransfer(hashcodeTCPReceiver, socket.getInetAddress());
+        ChatController.getInstance().processPermissionForFileTransfer(hashcodeTCPReceiver, socket.getInetAddress());
 
         hashcodeTCPReceiver++;
     }
@@ -108,7 +108,7 @@ public class ChatNetwork {
 	    try {
 	    	ByteArrayInputStream baos = new ByteArrayInputStream(p.getData());
 		    ObjectInputStream oos = new ObjectInputStream(baos);
-			Controller.getInstance().processMessage((Message)oos.readObject(), p.getAddress());
+			ChatController.getInstance().processMessage((Message)oos.readObject(), p.getAddress());
 		} catch (ClassNotFoundException | IOException e) {
             System.out.println("ERROR : can't proceed the UDP packet.");
             e.printStackTrace();

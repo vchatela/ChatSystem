@@ -58,8 +58,8 @@ public class Model {
 		}
 		public String toString(){
 			String header;
-			if (getSender().equals(Controller.getInstance().getLocalUser()))
-				header = new String( Controller.getInstance().getLocalUser().getNickname()+ ": " + System.lineSeparator());
+			if (getSender().equals(ChatController.getInstance().getLocalUser()))
+				header = new String( ChatController.getInstance().getLocalUser().getNickname()+ ": " + System.lineSeparator());
 			else
 				header = new String(getSender().getNickname() + ": " + System.lineSeparator());
 			return header;

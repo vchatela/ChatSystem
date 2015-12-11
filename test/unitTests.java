@@ -1,5 +1,5 @@
 import org.junit.Test;
-import services.Controller;
+import services.ChatController;
 import services.network.ChatNetwork;
 
 import java.io.IOException;
@@ -10,10 +10,10 @@ import java.io.IOException;
  *
  */
 public class unitTests {
-    private Controller c;
+    private ChatController c;
 
     protected void setUp() {
-        c = Controller.getInstance();
+        c = ChatController.getInstance();
     }
 
     @Test
@@ -28,7 +28,7 @@ public class unitTests {
 
     @Test
     public final void receiveHello(){
-        int i = Controller.getInstance().getNbrUser();
+        int i = ChatController.getInstance().getNbrUser();
         try {
             ChatNetwork.getInstance().sendHello("Lucas :)");
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public class unitTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assert i + 1 == Controller.getInstance().getNbrUser(); // TODO : check in local
+        assert i + 1 == ChatController.getInstance().getNbrUser(); // TODO : check in local
     }
 
     @Test
