@@ -165,6 +165,11 @@ public class Model {
 			conversations.add(new Vector<Msg>());
 			userListNeedUpdate=true;
 		}
+		else
+		{
+			User bis  = findUser(u.getAddr());
+			bis.setConnected(true);
+		}
     }
 	public void remoteUserDisconnect(InetAddress addr)
 	{
