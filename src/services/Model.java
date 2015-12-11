@@ -162,15 +162,18 @@ public class Model {
     
     public void addUser(User u)
     {
-    	if (!userList.contains(u))
+		//Is the user already in the list ?
+		User bis  = findUser(u.getAddr());
+		userListNeedUpdate=true;
+		if (bis==null)
 		{
+			//Creating new user
 			userList.add(u);
 			conversations.add(new Vector<Msg>());
-			userListNeedUpdate=true;
 		}
 		else
 		{
-			User bis  = findUser(u.getAddr());
+			//Updating pseudonyme and connected state
 			bis.setConnected(true);
 			bis.setNickname(u.getNickname());
 		}

@@ -15,7 +15,7 @@ public class ReceiverTCP extends Thread {
     File file;
     private long fileLength=0;
 
-	public synchronized long getBytesReceived() {
+	public long getBytesReceived() {
 		return bytesReceived;
 	}
 
@@ -106,19 +106,19 @@ public class ReceiverTCP extends Thread {
 					System.out.flush();
 					bos.write(bytes, 0, count);
 					bos.flush();
-
-					synchronized (this)
-					{
-						bytesReceived += count;
-					}
+					bytesReceived += count;
 				}
 				System.out.flush();
 
 				input.close();
 				output.close();
+				bos.close();
+
 			}
 			else {
 				output.writeBoolean(false);
+				input.close();
+				output.close();
 			}
 
 			} catch (Exception e1) {
@@ -133,5 +133,5 @@ public class ReceiverTCP extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
+	}
 }
