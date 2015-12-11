@@ -15,11 +15,11 @@ public class ReceiverTCP extends Thread {
     File file;
     private long fileLength=0;
 
-	public long getBytesReceived() {
+	public synchronized long getBytesReceived() {
 		return bytesReceived;
 	}
 
-	private long bytesReceived=0;
+	private volatile long bytesReceived=0;
 
 	public boolean ackGiven() {
 		return permissionAck;
@@ -107,7 +107,10 @@ public class ReceiverTCP extends Thread {
 					bos.write(bytes, 0, count);
 					bos.flush();
 
-					bytesReceived += count;
+					synchronized (this)
+					{
+						bytesReceived += count;
+					}
 				}
 				System.out.flush();
 

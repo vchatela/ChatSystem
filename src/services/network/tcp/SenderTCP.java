@@ -20,7 +20,7 @@ public class SenderTCP extends Thread{
     //Attributes
     private Socket clientSocket;
     private long fileLength=0;
-    private long bytesSent=0;
+    private volatile long bytesSent=0;
     private State state = State.waiting_for_file;
     DataInputStream input;
     DataOutputStream output;
