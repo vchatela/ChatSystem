@@ -21,6 +21,8 @@ public class SenderTCP extends Thread{
     private Socket clientSocket;
     private long fileLength=0;
     private volatile long bytesSent=0;
+
+
     private State state = State.waiting_for_file;
     DataInputStream input;
     DataOutputStream output;
@@ -131,7 +133,7 @@ public class SenderTCP extends Thread{
 
         }
         catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Remote user cancelled the file transfer");
             state = State.error;
         }
     }
@@ -156,5 +158,9 @@ public class SenderTCP extends Thread{
     public String getFileName()
     {
         return  file.getName();
+    }
+
+    public State getFileState() {
+        return state;
     }
 }

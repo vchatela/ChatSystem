@@ -42,8 +42,27 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
         else
         {
             SenderTCP senderTCP = SenderTCP.getInstance(fileMsg.getHashcodeTCP());
-            float percentage = (float)senderTCP.getBytesSent()/(float)senderTCP.getFileLength() * 100;
-            renderer.setText("Envoi de \"" + senderTCP.getFileName() + "\" ... " + percentage + "%");
+
+
+            switch (senderTCP.getFileState())
+            {
+                case file_transferred:
+                    renderer.setText(senderTCP.getFileName() + " envoyé.");
+                    break;
+
+                case error:
+                    renderer.setText(senderTCP.getFileName() + " error.");
+                    break;
+
+                case sending_file:
+                    float percentage = (float)senderTCP.getBytesSent()/(float)senderTCP.getFileLength() * 100;
+                    renderer.setText("Envoi de \"" + senderTCP.getFileName() + "\" ... " + percentage + "%");
+                    break;
+
+                case file_refused:
+                    renderer.setText(senderTCP.getFileName() + " refusé.");
+                    break;
+            }
         }
         return renderer;
     }
