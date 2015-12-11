@@ -27,6 +27,11 @@ public class ReceiverTCP extends Thread {
 
 	private boolean permissionAck=false;
 	private boolean fileAccepted;
+
+	public String getFilePath() {
+		return filePath;
+	}
+
 	private String filePath;
 	private String fileName;
 

@@ -102,7 +102,6 @@ public class ConversationComponent extends JComponent implements ActionListener{
                 }
             }
         }
-
         this.conversation.setText(s);
     }
     public String formatMessage(String value){

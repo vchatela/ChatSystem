@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -92,6 +93,17 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                                     try {
                                         receiverTCP.acceptFile(fc.getSelectedFile().getCanonicalPath());
                                     } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            else {
+                                if(receiverTCP.getBytesReceived()==receiverTCP.getFileLength()){
+                                    // open file
+                                    try {
+                                        Desktop.getDesktop().open(new File(receiverTCP.getFilePath() +File.separator+ receiverTCP.getFileName()));
+                                    } catch (IOException e) {
+                                        System.out.println("Can't open file : " + receiverTCP.getFileName());
                                         e.printStackTrace();
                                     }
                                 }
