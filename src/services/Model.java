@@ -25,6 +25,9 @@ public class Model {
 		public String getNickname() {
 			return nickname;
 		}
+		public void setNickname(String nickname) {
+			this.nickname = nickname;
+		}
 		public InetAddress getAddr() {
 			return addr;
 		}
@@ -169,8 +172,10 @@ public class Model {
 		{
 			User bis  = findUser(u.getAddr());
 			bis.setConnected(true);
+			bis.setNickname(u.getNickname());
 		}
     }
+
 	public void remoteUserDisconnect(InetAddress addr)
 	{
 		int i = 0;
