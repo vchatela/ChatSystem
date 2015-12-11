@@ -47,11 +47,11 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
             switch (senderTCP.getFileState())
             {
                 case file_transferred:
-                    renderer.setText(senderTCP.getFileName() + " envoyé.");
+                    renderer.setText("Envoyé : " + senderTCP.getFileName());
                     break;
 
                 case error:
-                    renderer.setText(senderTCP.getFileName() + " error.");
+                    renderer.setText("Error : " + senderTCP.getFileName());
                     break;
 
                 case sending_file:
@@ -60,7 +60,11 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
                     break;
 
                 case file_refused:
-                    renderer.setText(senderTCP.getFileName() + " refusé.");
+                    renderer.setText("Fichier refusé :" + senderTCP.getFileName());
+                    break;
+
+                case waiting_for_accept:
+                    renderer.setText("En attente :" + senderTCP.getFileName());
                     break;
             }
         }
