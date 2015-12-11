@@ -30,8 +30,7 @@ public class FileListCellRenderer extends DefaultListCellRenderer{
             if (receiverTCP.ackGiven())
             {
                 float percentage = (float)receiverTCP.getBytesReceived() / (float)receiverTCP.getFileLength() * 100;
-                System.out.println(receiverTCP.getBytesReceived());
-                System.out.println(receiverTCP.getFileLength());
+
                 renderer.setText("Réception de \"" + receiverTCP.getFileName() + "\" ... " + percentage + "%");}
             else
             {
