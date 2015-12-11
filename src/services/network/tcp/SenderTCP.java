@@ -134,8 +134,6 @@ public class SenderTCP extends Thread{
             e.printStackTrace();
             state = State.error;
         }
-        fileLength=0;
-        bytesSent=0;
     }
 
     private void close()

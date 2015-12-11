@@ -130,7 +130,5 @@ public class ReceiverTCP extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		fileLength = 0;
-		bytesReceived = 0;
     }
 }
