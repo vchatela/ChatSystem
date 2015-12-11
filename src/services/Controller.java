@@ -35,7 +35,7 @@ public class Controller {
             return;
 
 		localUser = new User((nickname + "@" +InetAddress.getLocalHost().getHostName()), InetAddress.getLocalHost());
-        System.out.println("Sending hello");
+        System.out.println("[UDP] - Hello connexion");
         ChatNetwork.getInstance().sendHello(localUser.getNickname());
         connected = true;
     }
@@ -51,8 +51,10 @@ public class Controller {
 
     public void sendText(String text, User receiver){
         //Sending the message
-        System.out.println("Sending \"" + (text + "\" to user : " + receiver.getNickname()));
-        ChatNetwork.getInstance().sendString(text, receiver.getAddr());
+        if(!getLocalUser().getNickname().equals(receiver.getNickname())) {
+            System.out.println("[UDP] - Sending \"" + (text + "\" to user : " + receiver.getNickname()));
+            ChatNetwork.getInstance().sendString(text, receiver.getAddr());
+        }
 
         //Updating the model
         int index = model.getUserList().indexOf(receiver);
@@ -106,26 +108,28 @@ public class Controller {
         switch (m.getHeader())
     	{
     		case hello:
-                if(!getLocalUser().getNickname().equals(m.getData()))
+                if(!getLocalUser().getNickname().equals(m.getData())){
     			    model.addUser(new User(m.getData(), addr));
+                    System.out.println("[UDP] - Hello received from : " + m.getData());
+                }
                 try {
 					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), addr);
-                    System.out.println("Hello received from : " + m.getData());
 				} catch (IOException e) {
-                    System.out.println("ERROR : While sending Hello ack to " + localUser.getNickname());
+                    System.out.println("[UDP] - ERROR : While sending Hello ack to " + localUser.getNickname());
                     e.printStackTrace();
 				}
                 // TODO If the user was previously open (tab), allow again to send message to him
     			break;
     			
     		case helloAck:
-                if(!getLocalUser().getNickname().equals(m.getData()))
+                if(!getLocalUser().getNickname().equals(m.getData())){
     			    model.addUser(new User(m.getData(), addr));
-                System.out.println("HelloAck received from : " + m.getData());
+                    System.out.println("[UDP] - HelloAck received from : " + m.getData());
+                }
     			break;
     			
     		case message:
-    			System.out.println("New message : "+m.getData());
+    			System.out.println("[UDP] - New message : "+m.getData());
                 Model.User user = model.findUser(addr);
 
                 int index = model.getUserList().indexOf(user);
@@ -144,8 +148,10 @@ public class Controller {
     			
 			case bye:
                 //TODO be carreful : add/get info from a hashmap containing the addr AND the username
-                System.out.println("Goodbye received from : " + addr); //same for info : put nickname !
-                model.remoteUserDisconnect(addr);
+                if(!getLocalUser().getNickname().equals(m.getData())) {
+                    System.out.println("[UDP] - Goodbye received from : " + addr); //same for info : put nickname !
+                    model.remoteUserDisconnect(addr);
+                }
                 //TODO if user disconnect, we need to block sending message to him
 				break;
     			

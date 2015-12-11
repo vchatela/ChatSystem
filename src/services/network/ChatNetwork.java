@@ -84,7 +84,6 @@ public class ChatNetwork {
 		for(InetAddress addr : getBroadList())
 		{
 			senderUDP.send(m, addr);
-            System.out.println("Sending hello to : " + addr);
         }
     }
     
