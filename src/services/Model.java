@@ -108,7 +108,7 @@ public class Model extends Observable{
 	}
 
 	private Vector<User> userListOpenedTab;
-	private Vector<Vector<Msg>> conversations;
+	private volatile Vector<Vector<Msg>> conversations;
 	private LinkedList<FileMsg> newFileTransferRequests;
 	private boolean userListNeedUpdate = false;
 	private boolean conversationNeedUpdate = false;

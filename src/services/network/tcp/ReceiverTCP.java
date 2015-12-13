@@ -10,34 +10,17 @@ import java.util.HashMap;
 public class ReceiverTCP extends Thread {
     private Socket clientSocket;
     private static HashMap<Integer,ReceiverTCP> instances = new HashMap<>();
+	public static enum State {waiting_for_accept, receiving_file, file_transferred, file_refused, error};
     private static final int BUFFER_SIZE = 4096;
     
     File file;
     private long fileLength=0;
-
-	public long getBytesReceived() {
-		return bytesReceived;
-	}
-
 	private volatile long bytesReceived=0;
-
-	public boolean ackGiven() {
-		return permissionAck;
-	}
-
-	private boolean permissionAck=false;
 	private boolean fileAccepted;
-
-	public String getFilePath() {
-		return filePath;
-	}
-
 	private String filePath;
 	private String fileName;
+	private State state;
 
-    private ReceiverTCP(int key) {
-        instances.put(key,this);
-    }
 
     public static ReceiverTCP getInstance(int key){
         ReceiverTCP instance = instances.get(key);
@@ -47,21 +30,37 @@ public class ReceiverTCP extends Thread {
         return instance;
     }
 
+	private ReceiverTCP(int key) {
+		instances.put(key,this);
+		state=State.waiting_for_accept;
+	}
+
+	public State getFileState() {
+		return state;
+	}
+
+	public long getBytesReceived() {
+		return bytesReceived;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
 
     public void setClientSocket(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
 
 	public synchronized void acceptFile(String path) {
-		permissionAck = true;
 		fileAccepted = true;
 		filePath = path;
+		state=State.receiving_file;
 		notify();
 	}
 
 	public synchronized void refuseFile() {
-		permissionAck = true;
 		fileAccepted = false;
+		state = State.file_refused;
 		notify();
 	}
 
@@ -86,7 +85,7 @@ public class ReceiverTCP extends Thread {
 			//Waiting for accept
 			synchronized (this)
 			{
-				while (permissionAck == false)
+				while (state == State.waiting_for_accept)
 				{
 					wait();
 				}
@@ -119,6 +118,8 @@ public class ReceiverTCP extends Thread {
 				output.close();
 				bos.close();
 
+				state = State.file_transferred;
+
 			}
 			else {
 				output.writeBoolean(false);
@@ -129,6 +130,7 @@ public class ReceiverTCP extends Thread {
 			} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			state = State.error;
 			}
 
     	//File transfer is terminated, closing connection

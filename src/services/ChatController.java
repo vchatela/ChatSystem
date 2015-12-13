@@ -59,7 +59,11 @@ public class ChatController {
         //Updating the model
         int index = model.getUserList().indexOf(receiver);
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        conversation.add (new Model.TextMsg(text, localUser));
+
+        synchronized (conversation)
+        {
+            conversation.add (new Model.TextMsg(text, localUser));
+        }
         model.setConversationNeedUpdate(true);
         model.notifyObservers();
     }
@@ -70,10 +74,13 @@ public class ChatController {
 
         //Updating the model
         int index = model.getUserList().indexOf(receiver);
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
 
+        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
         Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.ToRemoteUser);
-        conversation.add (fileMsg);
+        synchronized (conversation)
+        {
+            conversation.add (fileMsg);
+        }
         model.setConversationNeedUpdate(true);
 
         model.setFileTransferNeedUpdate(true);
@@ -86,7 +93,10 @@ public class ChatController {
         int index = model.getUserList().indexOf(model.findUser(addr));
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
         Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.FromRemoteUser);
-        conversation.add (fileMsg);
+        synchronized (conversation)
+        {
+            conversation.add (fileMsg);
+        }
         model.setConversationNeedUpdate(true);
         model.setFileTransferNeedUpdate(true);
         model.addFileTransferRequest(fileMsg);
@@ -140,7 +150,9 @@ public class ChatController {
                 Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
 
                 Model.TextMsg t = new Model.TextMsg(m.getData(), user);
-                conversation.add(t);
+                synchronized (conversation) {
+                    conversation.add(t);
+                }
 
                 model.setConversationNeedUpdate(true);
                 //if the user's conversation tab is not opened do it

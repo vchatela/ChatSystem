@@ -116,7 +116,6 @@ public class SenderTCP extends Thread{
             int bytesToSend = (int) Math.min(((long)4096), (fileLength - bytesSent));
             while ((bytesToSend)>0)
             {
-                System.out.println("SenderTCP : Sending bytes " + bytesSent + " to " + (bytesSent + bytesToSend-1));
                 System.out.flush();
                 bis.read(byteArray, 0, bytesToSend);
                 output.write(byteArray, 0, bytesToSend);

@@ -26,8 +26,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
     //J
     private JList<Model.User> listUser;
-    private JList<Model.FileMsg> fileTransferJList;
-    private Vector<Model.FileMsg> fileTransferVector;
+    private JPanel fileTransferPanel;
     private JTabbedPane tabbedPane;
     private JButton disconnectButton;
 
@@ -62,61 +61,12 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         j.add(listScroller,BorderLayout.CENTER);
 
         //JList Files
-        fileTransferVector = new Vector<Model.FileMsg>();
-        fileTransferJList = new JList<Model.FileMsg>();
-        fileTransferJList.addListSelectionListener(this); // TODO
-        fileTransferJList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        fileTransferJList.setLayoutOrientation(JList.VERTICAL);
-        fileTransferJList.setVisibleRowCount(-1);
+        fileTransferPanel = new JPanel();
+        fileTransferPanel.setLayout(new BoxLayout(fileTransferPanel, BoxLayout.PAGE_AXIS));
 
-        FileListCellRenderer cellRenderer = new FileListCellRenderer();
-        fileTransferJList.setCellRenderer(cellRenderer);
-        JScrollPane listScrollerFiles = new JScrollPane(fileTransferJList);
-        listScrollerFiles.setPreferredSize(new Dimension(250, 80));
-        j.add(listScrollerFiles,BorderLayout.PAGE_END);
-
-        MouseListener mouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent mouseEvent) {
-                JList theList = (JList) mouseEvent.getSource();
-                if (mouseEvent.getClickCount() == 2) {
-                    int index = theList.locationToIndex(mouseEvent.getPoint());
-                    if (index >= 0) {
-                        Model.FileMsg fileMsg = (Model.FileMsg) theList.getModel().getElementAt(index);
-                        if(fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
-                        {
-                            ReceiverTCP receiverTCP = ReceiverTCP.getInstance(fileMsg.getHashcodeTCP());
-                            if (!receiverTCP.ackGiven())
-                            {
-                                JFileChooser fc = new JFileChooser();
-                                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                                fc.setAcceptAllFileFilterUsed(false);
-
-                                if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                                    try {
-                                        receiverTCP.acceptFile(fc.getSelectedFile().getCanonicalPath());
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                            else {
-                                if(receiverTCP.getBytesReceived()==receiverTCP.getFileLength()){
-                                    // open file
-                                    try {
-                                        Desktop.getDesktop().open(new File(receiverTCP.getFilePath() +File.separator+ receiverTCP.getFileName()));
-                                    } catch (IOException e) {
-                                        System.out.println("Can't open file : " + receiverTCP.getFileName());
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        fileTransferJList.addMouseListener(mouseListener);
+        JScrollPane fileTransferPanelScroller = new JScrollPane(fileTransferPanel);
+        fileTransferPanelScroller.setPreferredSize(new Dimension(250, 300));
+        j.add(fileTransferPanelScroller, BorderLayout.PAGE_END);
 
         add(j,BorderLayout.LINE_END);
 
@@ -163,15 +113,27 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 				break;
 				
 			case "Refresh" :
-                //Refresh file transfer percentage
+                //Refresh file transfer list
                     LinkedList<Model.FileMsg> fileMsgs = model.getNewFileTransferRequests();
 
-
-                    while (!fileMsgs.isEmpty())
+                    //FileMsgs shared and must be synchronized
+                    synchronized (fileMsgs)
                     {
-                        fileTransferVector.addElement(fileMsgs.pollLast());
+                        while (!fileMsgs.isEmpty())
+                        {
+                            Model.FileMsg fileMsg = fileMsgs.pollLast();
+                            fileTransferPanel.add(new FileTransferComponent(fileMsg));
+                        }
                     }
-                    fileTransferJList.setListData(fileTransferVector);
+
+                //Refresh file transfer state
+                for (Component c : fileTransferPanel.getComponents()) {
+                    FileTransferComponent fc = (FileTransferComponent) c;
+                    fc.update();
+                }
+
+                revalidate();
+                repaint();
                 break;
 		}
 		

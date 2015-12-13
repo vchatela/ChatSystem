@@ -74,31 +74,38 @@ public class ConversationComponent extends JComponent implements ActionListener,
         add(b3,BorderLayout.PAGE_END);
     }
     
-    synchronized private void refreshEntireConversation()
+    private void refreshEntireConversation()
     {
         int index = model.getUserList().indexOf(selectedRemoteUser);
         if (index==-1)
             return; //No user selected, nothing to be done
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        String s = "";
-        for (Model.Msg m : conversation)
+
+        //Vector is shared and must be synchronized
+        synchronized (conversation)
         {
-            if (m.getClass()==Model.TextMsg.class) {
-                s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
-            }
-            else if(m.getClass()==Model.FileMsg.class) {
-                Model.FileMsg fileMsg = (Model.FileMsg)m;
-                if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
-                {
-                    s= s+"Remote user asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
+            Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+            String s = "";
+
+            for (Model.Msg m : conversation)
+            {
+                if (m.getClass()==Model.TextMsg.class) {
+                    s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
                 }
-                else
-                {
-                    s= s+"You asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
+                else if(m.getClass()==Model.FileMsg.class) {
+                    Model.FileMsg fileMsg = (Model.FileMsg)m;
+                    if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
+                    {
+                        s= s+"Remote user asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
+                    }
+                    else
+                    {
+                        s= s+"You asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
+                    }
                 }
             }
+            this.conversation.setText(s);
         }
-        this.conversation.setText(s);
+
     }
     public String formatMessage(String value){
         String res ="";
