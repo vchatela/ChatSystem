@@ -61,6 +61,7 @@ public class ChatController {
         Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
         conversation.add (new Model.TextMsg(text, localUser));
         model.setConversationNeedUpdate(true);
+        model.notifyObservers();
     }
 
     public void sendFile(File f, User receiver) {
@@ -77,6 +78,7 @@ public class ChatController {
 
         model.setFileTransferNeedUpdate(true);
         model.addFileTransferRequest(fileMsg);
+        model.notifyObservers();
     }
 
     public void processPermissionForFileTransfer(int key, InetAddress addr) {
@@ -86,9 +88,9 @@ public class ChatController {
         Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.FromRemoteUser);
         conversation.add (fileMsg);
         model.setConversationNeedUpdate(true);
-
         model.setFileTransferNeedUpdate(true);
         model.addFileTransferRequest(fileMsg);
+        model.notifyObservers();
     }
     
     public void processMessage(Message m, InetAddress addr){
@@ -108,17 +110,17 @@ public class ChatController {
         switch (m.getHeader())
     	{
     		case hello:
-                if(!getLocalUser().getNickname().equals(m.getData())){
+                //if(!getLocalUser().getNickname().equals(m.getData())){
     			    model.addUser(new User(m.getData(), addr));
                     System.out.println("[UDP] - Hello received from : " + m.getData());
-                }
+                //}
                 try {
 					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), addr);
 				} catch (IOException e) {
                     System.out.println("[UDP] - ERROR : While sending Hello ack to " + localUser.getNickname());
                     e.printStackTrace();
 				}
-                // TODO If the user was previously open (tab), allow again to send message to him
+                model.notifyObservers();
     			break;
     			
     		case helloAck:
@@ -126,6 +128,7 @@ public class ChatController {
     			    model.addUser(new User(m.getData(), addr));
                     System.out.println("[UDP] - HelloAck received from : " + m.getData());
                 }
+                model.notifyObservers();
     			break;
     			
     		case message:
@@ -138,13 +141,14 @@ public class ChatController {
 
                 Model.TextMsg t = new Model.TextMsg(m.getData(), user);
                 conversation.add(t);
-                //TODO : notify by observer
+
                 model.setConversationNeedUpdate(true);
                 //if the user's conversation tab is not opened do it
                 if(model.getUserListOpenedTab().indexOf(user)==-1){
                     model.setNeedToOpenATab(true);
                     model.setUsertabToOpen(user);
                 }
+                model.notifyObservers();
     			break;
     			
 			case bye:
@@ -152,7 +156,7 @@ public class ChatController {
                     System.out.println("[UDP] - Goodbye received from : " + addr); //same for info : put nickname !
                     model.remoteUserDisconnect(addr);
                 }
-                //TODO if user disconnect, we need to block sending message to him
+                model.notifyObservers();
 				break;
     	}
     }

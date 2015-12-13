@@ -40,7 +40,6 @@ public class ChatNetwork {
 		} catch (SocketException e) {
 			System.out.println("Error : " + e.toString());
 		}
-
     }
 
     public int sendFile(File f, InetAddress addr) {
@@ -100,7 +99,7 @@ public class ChatNetwork {
         {
             senderUDP.send(m, addr);
         }
-        System.out.println("Message sent by broadcast.");
+        System.out.println("[UDP] - Bye sent");
     }
    
     public void processUDPPacket(DatagramPacket p)
@@ -111,7 +110,6 @@ public class ChatNetwork {
 			ChatController.getInstance().processMessage((Message)oos.readObject(), p.getAddress());
 		} catch (ClassNotFoundException | IOException e) {
             System.out.println("ERROR : can't proceed the UDP packet.");
-            e.printStackTrace();
 		}
     }
     
@@ -121,7 +119,7 @@ public class ChatNetwork {
         while(interfaces.hasMoreElements()) {
             NetworkInterface networkInterface = interfaces.nextElement();
             if (networkInterface.isLoopback())
-                continue;    
+                continue;
             for (InterfaceAddress interfaceAddress :networkInterface.getInterfaceAddresses()) {
                 InetAddress broadcast = interfaceAddress.getBroadcast();
                 if (broadcast == null)

@@ -119,12 +119,16 @@ public class Model extends Observable{
 
 	public void setFileTransferNeedUpdate(boolean fileTransferNeedUpdate) {
 		this.fileTransferNeedUpdate = fileTransferNeedUpdate;
+		setChanged();
 	}
 
 	private boolean fileTransferNeedUpdate = false;
 
 	public boolean isNeedToOpenATab() {return needToOpenATab;}
-	public void setNeedToOpenATab(boolean needToOpenATab) {this.needToOpenATab = needToOpenATab;}
+	public void setNeedToOpenATab(boolean needToOpenATab) {
+		setChanged();
+		this.needToOpenATab = needToOpenATab;
+	}
 	private boolean needToOpenATab = false;
 
 	public User getUsertabToOpen() {return usertabToOpen;}
@@ -135,6 +139,7 @@ public class Model extends Observable{
 		return userListNeedUpdate;
 	}
 	public void setUserListNeedUpdate(boolean userListNeedUpdate) {
+		setChanged();
 		this.userListNeedUpdate = userListNeedUpdate;
 	}
 	public boolean isConversationNeedUpdate() {
@@ -142,6 +147,7 @@ public class Model extends Observable{
 	}
 
 	public void setConversationNeedUpdate(boolean conversationNeedUpdate) {
+		setChanged();
 		this.conversationNeedUpdate = conversationNeedUpdate;
 	}
 
@@ -163,6 +169,7 @@ public class Model extends Observable{
     
     public void addUser(User u)
     {
+		setChanged();
 		//Is the user already in the list ?
 		User bis  = findUser(u.getAddr());
 		userListNeedUpdate=true;
@@ -182,6 +189,7 @@ public class Model extends Observable{
 
 	public void remoteUserDisconnect(InetAddress addr)
 	{
+		setChanged();
 		int i = 0;
 		boolean found = false;
 		while(i<userList.size() && !found ){
@@ -222,6 +230,7 @@ public class Model extends Observable{
 
 	public void addFileTransferRequest(FileMsg fileMsg)
 	{
+		setChanged();
 		newFileTransferRequests.add(fileMsg);
 	}
 }

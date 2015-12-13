@@ -7,12 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
 
 /**
  * Created by ValentinC on 04/11/2015.
  */
-public class ConversationComponent extends JComponent implements ActionListener{
+public class ConversationComponent extends JComponent implements ActionListener, Observer{
 
     private Model model;
     private Model.User selectedRemoteUser;
@@ -22,7 +24,6 @@ public class ConversationComponent extends JComponent implements ActionListener{
     private JButton jSendFile;
     private final static int sizeCutMessage = 70;
 
-    // TODO : when someone quit we need to block the message text
 
     //Other tools
     private JFileChooser fc;
@@ -30,6 +31,7 @@ public class ConversationComponent extends JComponent implements ActionListener{
     public ConversationComponent(Model model, Model.User selectedRemoteUser) {
         this.model = model;
         this.selectedRemoteUser = selectedRemoteUser;
+        model.addObserver(this);
 
         setLayout(new BorderLayout());
 
@@ -70,11 +72,6 @@ public class ConversationComponent extends JComponent implements ActionListener{
 
 
         add(b3,BorderLayout.PAGE_END);
-
-        Timer refreshTimer = new Timer(100, this);
-        refreshTimer.setActionCommand("Refresh");
-        refreshTimer.start();
-
     }
     
     synchronized private void refreshEntireConversation()
@@ -98,7 +95,6 @@ public class ConversationComponent extends JComponent implements ActionListener{
                 else
                 {
                     s= s+"You asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
-
                 }
             }
         }
@@ -118,21 +114,6 @@ public class ConversationComponent extends JComponent implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Refresh":
-                if (model.isConversationNeedUpdate()) {
-                    model.setConversationNeedUpdate(false);
-                    refreshEntireConversation();
-                }
-                if(!selectedRemoteUser.isConnected()) {
-                    jSend.setEnabled(false);
-                    jSendFile.setEnabled(false);
-                }
-                else {
-                    jSend.setEnabled(true);
-                    jSendFile.setEnabled(true);
-                }
-                break;
-
             case "Send":
                 actionSend();
                 break;
@@ -165,5 +146,21 @@ public class ConversationComponent extends JComponent implements ActionListener{
 
     public void disableTextMessage(){
         message.setEditable(false);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (model.isConversationNeedUpdate()) {
+            model.setConversationNeedUpdate(false);
+            refreshEntireConversation();
+        }
+        if(!selectedRemoteUser.isConnected()) {
+            jSend.setEnabled(false);
+            jSendFile.setEnabled(false);
+        }
+        else {
+            jSend.setEnabled(true);
+            jSendFile.setEnabled(true);
+        }
     }
 }

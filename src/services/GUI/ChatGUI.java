@@ -31,7 +31,7 @@ public class ChatGUI {
         connectedFrame = new ConnectedFrame(model);
         connectedFrame.setTitle("ChatSystem - Connected");
         connectedFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
+        model.addObserver(connectedFrame);
 
         if(username==null) {
             disconnectedFrame = new DisconnectedFrame();
@@ -83,9 +83,9 @@ public class ChatGUI {
         }
     }
     public class ToastMessage extends JDialog {
-        int miliseconds;
+        int milliseconds;
         public ToastMessage(String toastString, int time) {
-            this.miliseconds = time;
+            this.milliseconds = time;
             setUndecorated(true);
             getContentPane().setLayout(new BorderLayout(0, 0));
 
@@ -113,7 +113,7 @@ public class ChatGUI {
             new Thread(){
                 public void run() {
                     try {
-                        Thread.sleep(miliseconds);
+                        Thread.sleep(milliseconds);
                         dispose();
                     } catch (InterruptedException e) {
                         e.printStackTrace();

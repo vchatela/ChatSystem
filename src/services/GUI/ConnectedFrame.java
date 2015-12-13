@@ -31,6 +31,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
     private JTabbedPane tabbedPane;
     private JButton disconnectButton;
 
+
     public ConnectedFrame(Model model)
     {
         this.model = model;
@@ -50,7 +51,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         // Jlist User
         listUser = new JList(model.getUserList());
         listUser.addListSelectionListener(this);
-
+        listUser.setCellRenderer(new UserListCellRenderer());
 
         listUser.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         listUser.setLayoutOrientation(JList.VERTICAL);
@@ -162,13 +163,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 				break;
 				
 			case "Refresh" :
-                if (model.isUserListNeedUpdate()){
-                    refreshUserList();
-                    model.setUserListNeedUpdate(false);
-                }
-
-                if (model.isFileTransferNeedUpdate())
-                {
+                //Refresh file transfer percentage
                     LinkedList<Model.FileMsg> fileMsgs = model.getNewFileTransferRequests();
 
 
@@ -177,8 +172,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                         fileTransferVector.addElement(fileMsgs.pollLast());
                     }
                     fileTransferJList.setListData(fileTransferVector);
-                    //model.setFileTransferNeedUpdate(false);
-                }
                 break;
 		}
 		
@@ -233,9 +226,17 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
     @Override
     public void update(Observable o, Object arg) {
-        Model.User user = model.getUsertabToOpen();
-        createNewTab(user);
-        //on oublie pas de le reset
-        model.setUsertabToOpen(null);
+        if (model.isNeedToOpenATab())
+        {
+            Model.User user = model.getUsertabToOpen();
+            createNewTab(user);
+            //on oublie pas de le reset
+            model.setUsertabToOpen(null);
+        }
+
+        if (model.isUserListNeedUpdate()){
+            refreshUserList();
+            model.setUserListNeedUpdate(false);
+        }
     }
 }
