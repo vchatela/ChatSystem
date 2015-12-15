@@ -1,15 +1,11 @@
 package services.GUI;
 
-import services.Model;
-import services.network.tcp.ReceiverTCP;
-import services.network.tcp.SenderTCP;
+import services.model.Model;
+import services.model.User;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by Admin on 13/12/2015.
- */
 public class UserListCellRenderer extends DefaultListCellRenderer{
     private ImageIcon connectedIcon;
     private ImageIcon disconnectedIcon;
@@ -23,13 +19,13 @@ public class UserListCellRenderer extends DefaultListCellRenderer{
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         JLabel renderer;
-        Model.User user;
+        User user;
 
         renderer = (JLabel) super.getListCellRendererComponent(list, value, index,
                 isSelected, cellHasFocus);
 
 
-        user = (Model.User) value;
+        user = (User) value;
 
         if (user.isConnected()) {
             renderer.setText(user.getNickname());

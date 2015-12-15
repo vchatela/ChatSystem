@@ -1,20 +1,19 @@
 package services.GUI;
 
-import services.Model;
+import services.model.FileMessage;
+import services.model.Model;
+import services.model.User;
 import services.network.ChatNetwork;
-import services.network.tcp.ReceiverTCP;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 
 /**
  * Created by Lucas on 31/10/2015.
@@ -25,7 +24,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
     private Model model;
 
     //J
-    private JList<Model.User> listUser;
+    private JList<User> listUser;
     private JPanel fileTransferPanel;
     private JTabbedPane tabbedPane;
     private JButton disconnectButton;
@@ -114,16 +113,13 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 				
 			case "Refresh" :
                 //Refresh file transfer list
-                    LinkedList<Model.FileMsg> fileMsgs = model.getNewFileTransferRequests();
+                    LinkedList<FileMessage> fileMsgs = model.getNewFileTransferRequests();
 
                     //FileMsgs shared and must be synchronized
-                    synchronized (fileMsgs)
+                    while (!fileMsgs.isEmpty())
                     {
-                        while (!fileMsgs.isEmpty())
-                        {
-                            Model.FileMsg fileMsg = fileMsgs.pollLast();
-                            fileTransferPanel.add(new FileTransferComponent(fileMsg));
-                        }
+                        FileMessage fileMsg = fileMsgs.pollLast();
+                        fileTransferPanel.add(new FileTransferComponent(fileMsg));
                     }
 
                 //Refresh file transfer state
@@ -177,12 +173,11 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
             }
         }
 	}
-    private void createNewTab(Model.User user){
+    private void createNewTab(User user){
         JComponent panel1;
-        panel1 = new ConversationComponent(model, user);
+        panel1 = new ConversationComponent(user);
         panel1.setSize(500, 500);
         model.getUserListOpenedTab().add(user);
-        model.setConversationNeedUpdate(true);
         tabbedPane.addTab(user.getNickname(), null, panel1);
     }
 
@@ -190,7 +185,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
     public void update(Observable o, Object arg) {
         if (model.isNeedToOpenATab())
         {
-            Model.User user = model.getUsertabToOpen();
+            User user = model.getUsertabToOpen();
             createNewTab(user);
             //on oublie pas de le reset
             model.setNeedToOpenATab(false);

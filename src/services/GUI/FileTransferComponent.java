@@ -1,6 +1,7 @@
 package services.GUI;
 
-import services.Model;
+import services.model.FileMessage;
+import services.model.Model;
 import services.network.tcp.ReceiverTCP;
 import services.network.tcp.SenderTCP;
 
@@ -13,18 +14,15 @@ import java.io.File;
 import java.io.IOException;
 
 
-/**
- * Created by Admin on 13/12/2015.
- */
 public class FileTransferComponent extends JComponent implements ActionListener{
-    private Model.FileMsg fileMsg;
+    private FileMessage fileMsg;
     private JProgressBar progressBar;
     private JLabel stateLabel;
     private JButton acceptButton;
     private JButton refuseButton;
     private JButton openButton;
 
-    public FileTransferComponent(Model.FileMsg fileMsg)
+    public FileTransferComponent(FileMessage fileMsg)
     {
         this.fileMsg = fileMsg;
         progressBar = new JProgressBar();
@@ -40,10 +38,7 @@ public class FileTransferComponent extends JComponent implements ActionListener{
         setLayout(new BorderLayout());
         Border border = BorderFactory.createEtchedBorder();
 
-        if (fileMsg==null)
-            System.out.println("Wow strange thing happened here");
-
-        if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
+        if (fileMsg.getTransferType()== FileMessage.TransferType.FromRemoteUser)
         {
             ReceiverTCP receiverTCP = ReceiverTCP.getInstance(fileMsg.getHashcodeTCP());
             progressBar.setMaximum((int)receiverTCP.getFileLength());
@@ -64,7 +59,7 @@ public class FileTransferComponent extends JComponent implements ActionListener{
         removeAll();
         setMaximumSize(new Dimension(245, 55));
 
-        if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
+        if (fileMsg.getTransferType()== FileMessage.TransferType.FromRemoteUser)
         {
             ReceiverTCP receiverTCP = ReceiverTCP.getInstance(fileMsg.getHashcodeTCP());
             switch (receiverTCP.getFileState())

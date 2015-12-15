@@ -1,12 +1,11 @@
 package services;
 
-import services.Model.User;
+import services.model.*;
 import services.network.ChatNetwork;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Vector;
 
 /**
  * Created by ValentinC on 21/10/2015.
@@ -55,15 +54,7 @@ public class ChatController {
         ChatNetwork.getInstance().sendString(text, receiver.getAddr());
 
         //Updating the model
-        int index = model.getUserList().indexOf(receiver);
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-
-        synchronized (conversation)
-        {
-            conversation.add (new Model.TextMsg(text, localUser));
-        }
-        model.setConversationNeedUpdate(true);
-        model.notifyObservers();
+        receiver.addMessage(new TextMessage(text, localUser));
     }
 
     public void sendFile(File f, User receiver) {
@@ -71,15 +62,8 @@ public class ChatController {
         int key = ChatNetwork.getInstance().sendFile(f, receiver.getAddr());
 
         //Updating the model
-        int index = model.getUserList().indexOf(receiver);
-
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.ToRemoteUser);
-        synchronized (conversation)
-        {
-            conversation.add (fileMsg);
-        }
-        model.setConversationNeedUpdate(true);
+        FileMessage fileMsg = new FileMessage(localUser, key, FileMessage.TransferType.ToRemoteUser);
+        receiver.addMessage(fileMsg);
 
         model.setFileTransferNeedUpdate(true);
         model.addFileTransferRequest(fileMsg);
@@ -88,14 +72,11 @@ public class ChatController {
 
     public void processPermissionForFileTransfer(int key, InetAddress addr) {
         //Updating the model
-        int index = model.getUserList().indexOf(model.findUser(addr));
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
-        Model.FileMsg fileMsg = new Model.FileMsg(localUser, key, Model.FileMsg.TransferType.FromRemoteUser);
-        synchronized (conversation)
-        {
-            conversation.add (fileMsg);
-        }
-        model.setConversationNeedUpdate(true);
+        FileMessage fileMsg = new FileMessage(localUser, key, FileMessage.TransferType.FromRemoteUser);
+
+        User receiver = model.findUser(addr);
+        receiver.addMessage(fileMsg);
+
         model.setFileTransferNeedUpdate(true);
         model.addFileTransferRequest(fileMsg);
         model.notifyObservers();
@@ -141,7 +122,7 @@ public class ChatController {
     			
     		case message:
     			System.out.println("[UDP] - New message : "+m.getData());
-                Model.User user = model.findUser(addr);
+                User user = model.findUser(addr);
 
                 //User not found
                 if (user == null)
@@ -154,31 +135,27 @@ public class ChatController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    model.setUserListNeedUpdate(true);
+                    model.notifyObservers();
                 }
 
-                int index = model.getUserList().indexOf(user);
-                Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+                TextMessage t = new TextMessage(m.getData(), user);
+                user.addMessage(t);
 
-                Model.TextMsg t = new Model.TextMsg(m.getData(), user);
-                synchronized (conversation) {
-                    conversation.add(t);
-                }
-
-                model.setConversationNeedUpdate(true);
                 //if the user's conversation tab is not opened do it
                 if(model.getUserListOpenedTab().indexOf(user)==-1){
                     model.setNeedToOpenATab(true);
                     model.setUsertabToOpen(user);
+                    model.notifyObservers();
                 }
-                model.notifyObservers();
     			break;
     			
 			case bye:
                 if(!getLocalUser().getNickname().equals(m.getData())) {
                     System.out.println("[UDP] - Goodbye received from : " + addr); //same for info : put nickname !
                     model.remoteUserDisconnect(addr);
+                    model.notifyObservers();
                 }
-                model.notifyObservers();
 				break;
     	}
     }

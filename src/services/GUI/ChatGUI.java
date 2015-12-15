@@ -1,7 +1,7 @@
 package services.GUI;
 
 import services.ChatController;
-import services.Model;
+import services.model.Model;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

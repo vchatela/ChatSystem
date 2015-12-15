@@ -1,7 +1,7 @@
 package services.GUI;
 
 import services.ChatController;
-import services.Model;
+import services.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,13 +11,10 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-/**
- * Created by ValentinC on 04/11/2015.
- */
 public class ConversationComponent extends JComponent implements ActionListener, Observer{
 
-    private Model model;
-    private Model.User selectedRemoteUser;
+    //Attributes
+    private User remoteUser;
     private JTextArea conversation;
     private JTextField message;
     private JButton jSend;
@@ -28,18 +25,15 @@ public class ConversationComponent extends JComponent implements ActionListener,
     //Other tools
     private JFileChooser fc;
 
-    public ConversationComponent(Model model, Model.User selectedRemoteUser) {
-        this.model = model;
-        this.selectedRemoteUser = selectedRemoteUser;
-        model.addObserver(this);
+    public ConversationComponent(User remoteUser) {
+        this.remoteUser = remoteUser;
+        remoteUser.addObserver(this);
 
         setLayout(new BorderLayout());
 
         conversation = new JTextArea();
         conversation.setEditable(false);
-        // TODO
-        //Font font = new Font("Verdana", Font.BOLD, 12);
-         //conversation.setFont(font);
+
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
 
@@ -76,22 +70,17 @@ public class ConversationComponent extends JComponent implements ActionListener,
     
     private void refreshEntireConversation()
     {
-        int index = model.getUserList().indexOf(selectedRemoteUser);
-        if (index==-1)
-            return; //No user selected, nothing to be done
-
-        //Vector is shared and must be synchronized
-        Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
+        Vector<Messages> conversation = remoteUser.getConversation();
         String s = "";
 
-        for (Model.Msg m : conversation)
+        for (Messages m : conversation)
         {
-            if (m.getClass()==Model.TextMsg.class) {
+            if (m.getClass()==TextMessage.class) {
                 s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
             }
-            else if(m.getClass()==Model.FileMsg.class) {
-                Model.FileMsg fileMsg = (Model.FileMsg)m;
-                if (fileMsg.getTransferType()== Model.FileMsg.TransferType.FromRemoteUser)
+            else if(m.getClass()==FileMessage.class) {
+                FileMessage fileMsg = (FileMessage)m;
+                if (fileMsg.getTransferType()== FileMessage.TransferType.FromRemoteUser)
                 {
                     s= s+"Remote user asked for a file transfer." + System.lineSeparator() + System.lineSeparator();
                 }
@@ -122,13 +111,13 @@ public class ConversationComponent extends JComponent implements ActionListener,
                 actionSend();
                 break;
             case "Send a File":
-                if (selectedRemoteUser == null)
+                if (remoteUser == null)
                     System.out.println("Aucun utilisateur selectionne.");
-                else if (!selectedRemoteUser.isConnected())
+                else if (!remoteUser.isConnected())
                     System.out.println("L'utilisateur selectionne est deconnecte.");
                 else {
                     if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                        ChatController.getInstance().sendFile(fc.getSelectedFile(), selectedRemoteUser);
+                        ChatController.getInstance().sendFile(fc.getSelectedFile(), remoteUser);
                     }
                 }
                 break;
@@ -136,25 +125,21 @@ public class ConversationComponent extends JComponent implements ActionListener,
 	}
 
     private void actionSend() {
-        if (selectedRemoteUser == null)
-            System.out.println("Aucun utilisateur selectionne.");
-        else if (!selectedRemoteUser.isConnected())
+        if (!remoteUser.isConnected())
             System.out.println("L'utilisateur selectionne est deconnecte.");
         else if (message.getText().equals("")) {
             //do nothing
         } else {
-            ChatController.getInstance().sendText(message.getText(), selectedRemoteUser);
+            ChatController.getInstance().sendText(message.getText(), remoteUser);
             message.setText("");
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if (model.isConversationNeedUpdate()) {
-            model.setConversationNeedUpdate(false);
+        if (remoteUser.newMessages())
             refreshEntireConversation();
-        }
-        if(!selectedRemoteUser.isConnected()) {
+        if(!remoteUser.isConnected()) {
             jSend.setEnabled(false);
             jSendFile.setEnabled(false);
         }
