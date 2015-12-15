@@ -146,7 +146,7 @@ public class SenderTCP extends Thread{
         try {
             clientSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[SenderTCP] - Connexion error");
         }
     }
 

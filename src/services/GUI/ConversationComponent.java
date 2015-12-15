@@ -79,17 +79,10 @@ public class ConversationComponent extends JComponent implements ActionListener,
 
         add(b3,BorderLayout.PAGE_END);
 
-        refreshEntireConversation();
         conversation.setEditorKit(new StyledEditorKit());
         initListenerJEditorPane(conversation);
 
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
+        refreshEntireConversation();
     }
 
     private void initListenerJEditorPane(final JEditorPane j) {

@@ -90,6 +90,7 @@ public class ChatNetwork {
     {
     	Message m = Message.createHelloAck(nickname);
 		senderUDP.send(m, addr);
+        System.out.println("[UDP] - Hello ack sent");
     }
 
     public void sendBye() throws IOException
