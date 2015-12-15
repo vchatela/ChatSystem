@@ -62,6 +62,9 @@ public class FileTransferComponent extends JComponent implements ActionListener{
         if (fileMsg.getTransferType()== FileMessage.TransferType.FromRemoteUser)
         {
             ReceiverTCP receiverTCP = ReceiverTCP.getInstance(fileMsg.getHashcodeTCP());
+            long bytesReceived = receiverTCP.getBytesReceived();
+            long total = receiverTCP.getFileLength();
+
             switch (receiverTCP.getFileState())
             {
                 case waiting_for_accept:
@@ -73,13 +76,11 @@ public class FileTransferComponent extends JComponent implements ActionListener{
                     break;
 
                 case receiving_file:
-                    long bytesReceived = receiverTCP.getBytesReceived();
-                    long total = receiverTCP.getFileLength();
                     progressBar.setValue((int) bytesReceived);
                     progressBar.setString(((Long) bytesReceived).toString() + "/" + ((Long) total).toString() + " bytes");
                     add(progressBar, BorderLayout.PAGE_END);
 
-                    stateLabel.setText("State : sending file ...");
+                    stateLabel.setText("State : receiving file ...");
                     add(stateLabel, BorderLayout.PAGE_START);
                     break;
 

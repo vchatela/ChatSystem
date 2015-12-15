@@ -123,7 +123,6 @@ public class Model extends Observable{
 
 	public synchronized void remoteUserDisconnect(InetAddress addr)
 	{
-		setChanged();
 		int i = 0;
 		boolean found = false;
 		while(i<userList.size() && !found ){
@@ -132,7 +131,10 @@ public class Model extends Observable{
 				userListNeedUpdate = true;
                 found = true;
 			}
+			i++;
 		}
+
+		setChanged();
 	}
 
 	public synchronized void addFileTransferRequest(FileMessage fileMsg)
