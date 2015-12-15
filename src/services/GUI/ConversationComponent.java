@@ -36,6 +36,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
         conversation.setEditable(false);
         DefaultCaret caret = (DefaultCaret) conversation.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        conversation.setLineWrap(true);
 
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
@@ -80,7 +81,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
         for (Messages m : conversation)
         {
             if (m.getClass()==TextMessage.class) {
-                s = s + formatMessage(m.toString()) + System.lineSeparator() + System.lineSeparator();
+                s = s + m.toString() + System.lineSeparator() + System.lineSeparator();
             }
             else if(m.getClass()==FileMessage.class) {
                 FileMessage fileMsg = (FileMessage)m;

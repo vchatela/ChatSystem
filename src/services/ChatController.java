@@ -147,6 +147,7 @@ public class ChatController {
                     model.setNeedToOpenATab(true);
                     model.setUsertabToOpen(user);
                     model.notifyObservers();
+
                 }
     			break;
     			
