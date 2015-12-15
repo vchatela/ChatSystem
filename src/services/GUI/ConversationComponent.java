@@ -37,6 +37,9 @@ public class ConversationComponent extends JComponent implements ActionListener,
         DefaultCaret caret = (DefaultCaret) conversation.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         conversation.setLineWrap(true);
+        //random font ...
+        Font[] tabfont = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+        conversation.setFont(tabfont[(int) (Math.random()*(tabfont.length))].deriveFont(14.0f));
 
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
@@ -123,10 +126,26 @@ public class ConversationComponent extends JComponent implements ActionListener,
             System.out.println("L'utilisateur selectionne est deconnecte.");
         else if (message.getText().equals("")) {
             //do nothing
-        } else {
+        } if(message.getText().equals("Ernesto")) {
+            jSend.setText("Enviar");
+            jSendFile.setText("Enviar archivo");
+            message.setText("");
+            return;
+        } if(message.getText().equals("Gilles")){
+            changeFontRandom();
+            message.setText("");
+            return;
+        }
+        else
+        {
             ChatController.getInstance().sendText(message.getText(), remoteUser);
             message.setText("");
         }
+    }
+
+    private void changeFontRandom() {
+        Font[] tabfont = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+        conversation.setFont(tabfont[(int) (Math.random()*(tabfont.length))].deriveFont(14.0f));
     }
 
     @Override

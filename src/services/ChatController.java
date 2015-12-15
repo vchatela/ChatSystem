@@ -93,8 +93,8 @@ public class ChatController {
         //On vérifie que l'on soit connecté
         if (!connected)
             return;
-        try {
-            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+         try {
+           Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
             for (NetworkInterface netint : Collections.list(nets)) {
                 Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
                 for(InetAddress local : Collections.list(inetAddresses)){
