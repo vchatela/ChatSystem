@@ -170,8 +170,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                 else {
                     // else create it
                     createNewTab(listUser.getSelectedValue());
-                    index = model.getUserListOpenedTab().indexOf(listUser.getSelectedValue());
-                    tabbedPane.setSelectedIndex(index);
                     model.notifyObservers();
                 }
             }
