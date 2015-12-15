@@ -163,8 +163,11 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         if (!e.getValueIsAdjusting()) {
             if (listUser.getSelectedIndex() != -1) {
                 // TODO : check if user tab already exist and open this one !
-                if(model.getUserListOpenedTab().indexOf(listUser.getSelectedValue()) != -1){
+                int index = model.getUserListOpenedTab().indexOf(listUser.getSelectedValue());
+                if(index != -1){
                     // open the tab at indexOf
+                    tabbedPane.setSelectedIndex(index);
+                    model.notifyObservers();
                 }
                 else {
                     // else create it
@@ -179,6 +182,8 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         panel1.setSize(500, 500);
         model.getUserListOpenedTab().add(user);
         tabbedPane.addTab(user.getNickname(), null, panel1);
+        int index = model.getUserListOpenedTab().indexOf(user);
+        tabbedPane.setSelectedIndex(index);
     }
 
     @Override
