@@ -39,22 +39,6 @@ public class unitTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assert i + 1 == ChatController.getInstance().getNbrUser(); // TODO : check in local
-    }
-
-    @Test
-    public final void exchangeHello(){
-
-
-    }
-
-    @Test
-    public final void exchangeMessage() {
-
-    }
-
-    @Test
-    public final void addUser(){
-
+        assert i == ChatController.getInstance().getNbrUser();
     }
 }
