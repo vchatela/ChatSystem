@@ -38,8 +38,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         conversation.setLineWrap(true);
         //random font ...
-        Font[] tabfont = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-        conversation.setFont(tabfont[(int) (Math.random()*(tabfont.length))].deriveFont(14.0f));
+        conversation.setFont(Font.getFont("Calibri"));
 
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
