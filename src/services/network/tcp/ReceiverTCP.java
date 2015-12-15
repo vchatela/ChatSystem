@@ -134,7 +134,7 @@ public class ReceiverTCP extends Thread {
 			}
 
 			} catch (Exception e1) {
-			System.out.println("[TCP] - Connexion error, file transfer cancelled");
+			System.out.println("[ReceiverTCP] - Connexion error, file transfer cancelled");
 			state = State.error;
 			}
 
@@ -142,7 +142,7 @@ public class ReceiverTCP extends Thread {
     	try {
 			clientSocket.close();
 		} catch (IOException e) {
-			System.out.println("[TCP] - Connexion error");
+			System.out.println("[ReceiverTCP] - Connexion error");
 		}
 	}
 }

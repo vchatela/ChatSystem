@@ -27,10 +27,11 @@ public class ServerTCP extends Thread {
         {
             try {
                 socketClient = serverSocket.accept();
-                System.out.println("New TCP connexion: "+socketClient.getInetAddress());
+                System.out.println("[ServerTCP] - New TCP connexion: "+socketClient.getInetAddress());
                 ChatNetwork.getInstance().newTCPConnection(socketClient);
             } catch (IOException e) {
                 e.printStackTrace();
+                System.out.println("[ServerTCP] - Connexion failed");
             }
         }
     }

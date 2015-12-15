@@ -29,7 +29,7 @@ public class SenderTCP extends Thread{
 
     //Multiton
     private SenderTCP(int key) {
-        System.out.println("New FileSenderTCP, hashcode: " + key);
+        System.out.println("[SenderTCP] - New FileSenderTCP, hashcode: " + key);
         instances.put(key,this);
     }
 
@@ -53,14 +53,14 @@ public class SenderTCP extends Thread{
     //Public methods
     public void sendFile(File f, InetAddress addr){
         if (state != State.waiting_for_file)
-            System.out.println("SenderTCP : File already given");
+            System.out.println("[SenderTCP] : File already given");
 
         else
         {
             file = f;
             fileLength = f.length();
             try {
-                System.out.println("Asking permission for sending file: " + f.getName() + ", length="+ fileLength + "bytes");
+                System.out.println("[SenderTCP] - Asking permission for sending file: " + f.getName() + ", length="+ fileLength + "bytes");
                 clientSocket = new Socket(addr, ChatNetwork.TCP_SERVER_PORT);
 
                 input = new DataInputStream( clientSocket.getInputStream());
@@ -70,7 +70,7 @@ public class SenderTCP extends Thread{
 
                 state=State.waiting_for_accept;
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("[SenderTCP] - Connexion refused");
                 state=State.error;
             }
         }
@@ -93,18 +93,18 @@ public class SenderTCP extends Thread{
 
     private void waitAccept()
     {
-        System.out.println("SenderTCP : Waiting for the remote user to accept the file");
+        System.out.println("[SenderTCP] - Waiting for the remote user to accept the file");
         try {
             if (input.readBoolean()) {
-                System.out.println("SenderTCP : File accepted");
+                System.out.println("[SenderTCP] - File accepted");
                 state=State.sending_file;
             }
             else {
-                System.out.println("SenderTCP : File refused");
+                System.out.println("[SenderTCP] - File refused");
                 state=State.file_refused;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[SenderTCP] - Error : wrong file transfer protocol");
             state = State.error;
         }
     }
@@ -128,14 +128,14 @@ public class SenderTCP extends Thread{
             }
 
             state=State.file_transferred;
-            System.out.println("SenderTCP : file sent");
+            System.out.println("[[SenderTCP] - File sent");
             
             bis.close();
             fis.close();
 
         }
         catch (IOException e) {
-            System.out.println("Remote user cancelled the file transfer");
+            System.out.println("[SenderTCP] - Remote user cancelled the file transfer");
             state = State.error;
         }
     }
