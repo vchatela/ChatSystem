@@ -42,10 +42,8 @@ public class ConversationComponent extends JComponent implements ActionListener,
         conversation.setEditable(false);
         DefaultCaret caret = (DefaultCaret) conversation.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        //conversation.setLineWrap(true);
         //random font ...
-        conversation.setFont(Font.getFont("Calibri"));
-
+        //conversation.setFont(Font.getFont("Calibri"));
 
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
@@ -197,7 +195,9 @@ public class ConversationComponent extends JComponent implements ActionListener,
 
     private void changeFontRandom() {
         Font[] tabfont = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-        conversation.setFont(tabfont[(int) (Math.random()*(tabfont.length))].deriveFont(14.0f));
+        Font font = tabfont[(int) (Math.random()*(tabfont.length))].deriveFont(14.0f);
+        conversation.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,Boolean.TRUE);
+        conversation.setFont(font);
     }
 
     @Override
