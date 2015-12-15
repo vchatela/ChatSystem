@@ -95,6 +95,8 @@ public class ConversationComponent extends JComponent implements ActionListener,
                             StyledDocument doc = (StyledDocument) e.getDocument();
                             int start = Utilities.getRowStart(j, Math.max(0, e.getOffset() - 1));
                             int end = Utilities.getWordStart(j, e.getOffset() + e.getLength());
+                            if(start <0 || end <0)
+                                return;
                             String text = doc.getText(start, end - start);
 
                             int i = text.indexOf(":)");

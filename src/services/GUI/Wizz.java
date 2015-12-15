@@ -18,8 +18,8 @@ class Wizz {
         //tableau de décallage
         //position initiale et le decallage
         int[] pos={0,decallage};
-        //fait bouger la fenêtre 12 fois
-        for (int i=1;i<13;i++) {
+        //fait bouger la fenêtre 36 fois
+        for (int i=1;i<37;i++) {
             //fait un division si le reste de la division (mod) est 0 position initial
             //sinon position + decallage
             c.setBounds(pos_x+pos[i%2],pos_y+pos[i%2],c.getBounds().getSize().width,c.getBounds().getSize().height);

@@ -204,9 +204,9 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
             //on oublie pas de le reset
             model.setNeedToOpenATab(false);
             model.setUsertabToOpen(null);
-            Wizz.creerWizz(this,5,50);
+            Wizz.creerWizz(this,3,30);
+            model.notifyObservers();
         }
-
         if (model.isUserListNeedUpdate()){
             refreshUserList();
             model.setUserListNeedUpdate(false);
