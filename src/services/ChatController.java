@@ -9,7 +9,10 @@ import services.network.ChatNetwork;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * Created by ValentinC on 21/10/2015.
@@ -91,9 +94,15 @@ public class ChatController {
         if (!connected)
             return;
         try {
-            if (addr.equals(InetAddress.getLocalHost()))
-                    return;
-        } catch (UnknownHostException e) {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface netint : Collections.list(nets)) {
+                Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                for(InetAddress local : Collections.list(inetAddresses)){
+                    if(addr.getHostAddress().equals(local.getHostAddress()))
+                        return;
+                }
+            }
+        }catch (SocketException e) {
             e.printStackTrace();
         }
 
@@ -101,10 +110,8 @@ public class ChatController {
         switch (m.getHeader())
     	{
     		case hello:
-                //if(!getLocalUser().getNickname().equals(m.getData())){
-    			    model.addUser(new User(m.getData(), addr));
-                    System.out.println("[UDP] - Hello received from : " + m.getData());
-                //}
+                model.addUser(new User(m.getData(), addr));
+                System.out.println("[UDP] - Hello received from : " + m.getData());
                 try {
 					ChatNetwork.getInstance().sendHelloAck(localUser.getNickname(), addr);
 				} catch (IOException e) {

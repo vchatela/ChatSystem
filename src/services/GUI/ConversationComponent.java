@@ -97,16 +97,6 @@ public class ConversationComponent extends JComponent implements ActionListener,
         }
         this.conversation.setText(s);
     }
-    public String formatMessage(String value){
-        String res ="";
-        int i = 0;
-        while(i+sizeCutMessage<value.length()) {
-            res += value.substring(i,i+sizeCutMessage) + System.lineSeparator();
-            i+=sizeCutMessage;
-        }
-        res += value.substring(i,value.length());
-        return res;
-    }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
