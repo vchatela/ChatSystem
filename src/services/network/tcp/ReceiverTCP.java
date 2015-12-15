@@ -1,4 +1,4 @@
-package services.network.tcp;
+	package services.network.tcp;
 
 import java.io.*;
 import java.net.Socket;
@@ -8,12 +8,14 @@ import java.util.HashMap;
  * Created by ValentinC on 22/10/2015.
  */
 public class ReceiverTCP extends Thread {
-    private Socket clientSocket;
-    private static HashMap<Integer,ReceiverTCP> instances = new HashMap<>();
-	public static enum State {waiting_for_accept, receiving_file, file_transferred, file_refused, error};
+	public enum State {waiting_for_accept, receiving_file, file_transferred, file_refused, error}
+
+	//Atributes
+		//Multiton
+		private Socket clientSocket;
+		private static HashMap<Integer,ReceiverTCP> instances = new HashMap<>();
     private static final int BUFFER_SIZE = 4096;
-    
-    File file;
+	private File file;
     private long fileLength=0;
 	private volatile long bytesReceived=0;
 	private boolean fileAccepted;
@@ -21,7 +23,9 @@ public class ReceiverTCP extends Thread {
 	private String fileName;
 	private State state;
 
+	//Methods
 
+	//Multiton
     public static ReceiverTCP getInstance(int key){
         ReceiverTCP instance = instances.get(key);
         if (instance == null)
@@ -35,6 +39,7 @@ public class ReceiverTCP extends Thread {
 		state=State.waiting_for_accept;
 	}
 
+	//Getters
 	public State getFileState() {
 		return state;
 	}
@@ -47,10 +52,20 @@ public class ReceiverTCP extends Thread {
 		return filePath;
 	}
 
+	public String getFileName() {
+		return fileName;
+	}
+
+	public long getFileLength() {
+		return fileLength;
+	}
+
+	//Setters
     public void setClientSocket(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
 
+	//Other methods
 	public synchronized void acceptFile(String path) {
 		fileAccepted = true;
 		filePath = path;
@@ -64,16 +79,7 @@ public class ReceiverTCP extends Thread {
 		notify();
 	}
 
-	public String getFileName()
-	{
-		return fileName;
-	}
-
-	public long getFileLength()
-	{
-		return fileLength;
-	}
-
+	//Thread
     public void run(){
         try {
 			DataInputStream input = new DataInputStream( clientSocket.getInputStream());
@@ -128,8 +134,7 @@ public class ReceiverTCP extends Thread {
 			}
 
 			} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.out.println("[TCP] - Connexion error, file transfer cancelled");
 			state = State.error;
 			}
 
@@ -137,8 +142,7 @@ public class ReceiverTCP extends Thread {
     	try {
 			clientSocket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("[TCP] - Connexion error");
 		}
 	}
 }

@@ -12,11 +12,24 @@ import java.util.Vector;
 public class Model extends Observable{
 
 	//Classes
+
+	/**
+	 * Class user
+	 * Store information about the user
+	 */
 	public static class User{
+		//User attributes
 		private String nickname;
 		private InetAddress addr;
 		private boolean connected;
 
+		//User methods
+		public User(String nickname, InetAddress addr)
+		{
+			this.nickname = nickname;
+			this.addr = addr;
+			connected = true;
+		}
 		public boolean isConnected() {
 			return connected;
 		}
@@ -32,23 +45,20 @@ public class Model extends Observable{
 		public InetAddress getAddr() {
 			return addr;
 		}
-		public User(String nickname, InetAddress addr)
-		{
-			this.nickname = nickname;
-			this.addr = addr;
-			connected = true;
-		}
-		
 		public String toString() {
 			return nickname +  " @" + addr;
 		}
-		
 		@Override 
 		public boolean equals(Object u2){
 			return ((this.nickname).equals(((User)u2).getNickname()));
 		}
 	}
 
+	/**
+	 * Class Msg
+	 * Generic message send by a user
+	 * Should be extended to match a real message (text, string, ...)
+	 */
 	public static abstract class Msg{
 		private User sender;
 		public Msg(User sender){
@@ -67,6 +77,12 @@ public class Model extends Observable{
 		}
 
 	};
+
+	/**
+	 * Class TextMsg
+	 * Used to store information about a text message
+	 * Is a Msg
+	 */
 	public static class TextMsg extends Msg{
 		private String text;
 		public TextMsg(String text, User sender) {
@@ -80,6 +96,13 @@ public class Model extends Observable{
 			return text;
 		}
 	}
+
+
+	/**
+	 * Class FileMsg
+	 * Used to store information about a FileMsg
+	 * Is a Msg
+	 */
 	public static class FileMsg extends Msg{
 		public static enum TransferType {ToRemoteUser, FromRemoteUser};
 
@@ -100,21 +123,80 @@ public class Model extends Observable{
 	}
 
 
-	//Class Attributes
+	/**
+	 * Class Model
+	 */
+
+	//Attributes
 	private Vector<User> userList;
+	private Vector<User> userListOpenedTab;
+	private Vector<Vector<Msg>> conversations;
+	private LinkedList<FileMsg> newFileTransferRequests;
+	private User usertabToOpen;
+	private boolean userListNeedUpdate = false;
+	private boolean conversationNeedUpdate = false;
+	private boolean fileTransferNeedUpdate = false;
+	private boolean needToOpenATab = false;
+
+	//Methods
+
+	public Model(){
+		userList = new Vector<>();
+		conversations = new Vector<>();
+		newFileTransferRequests = new LinkedList<>();
+		userListOpenedTab = new Vector<>();
+	}
+
+	public synchronized Vector<User> getUserList() {
+		return userList;
+	}
+	public synchronized Vector<Vector<Msg>> getConversations() {
+		return conversations;
+	}
+	public synchronized LinkedList<FileMsg> getNewFileTransferRequests() {
+		return newFileTransferRequests;
+	}
 
 	public Vector<User> getUserListOpenedTab() {
 		return userListOpenedTab;
 	}
 
-	private Vector<User> userListOpenedTab;
-	private volatile Vector<Vector<Msg>> conversations;
-	private LinkedList<FileMsg> newFileTransferRequests;
-	private boolean userListNeedUpdate = false;
-	private boolean conversationNeedUpdate = false;
+	public User getUsertabToOpen() {
+		return usertabToOpen;
+	}
+
+	public int getUserListSize(){
+		return userList.size();
+	}
+
+	public boolean isUserListNeedUpdate() {
+		return userListNeedUpdate;
+	}
+
+	public boolean isNeedToOpenATab() {
+		return needToOpenATab;
+	}
 
 	public boolean isFileTransferNeedUpdate() {
 		return fileTransferNeedUpdate;
+	}
+
+	public User findUser(InetAddress addr)
+	{
+		boolean found = false;
+		User u = null;
+		int i=0;
+
+		while(i<userList.size() && (!found))
+		{
+			if (userList.elementAt(i).getAddr().equals(addr))
+			{
+				u = userList.elementAt(i);
+				found = true;
+			}
+			i++;
+		}
+		return u;
 	}
 
 	public void setFileTransferNeedUpdate(boolean fileTransferNeedUpdate) {
@@ -122,22 +204,15 @@ public class Model extends Observable{
 		setChanged();
 	}
 
-	private boolean fileTransferNeedUpdate = false;
-
-	public boolean isNeedToOpenATab() {return needToOpenATab;}
 	public void setNeedToOpenATab(boolean needToOpenATab) {
 		setChanged();
 		this.needToOpenATab = needToOpenATab;
 	}
-	private boolean needToOpenATab = false;
 
-	public User getUsertabToOpen() {return usertabToOpen;}
-	public void setUsertabToOpen(User usertabToOpen) {	this.usertabToOpen = usertabToOpen;}
-	private User usertabToOpen;
-
-	public boolean isUserListNeedUpdate() {
-		return userListNeedUpdate;
+	public void setUsertabToOpen(User usertabToOpen) {
+		this.usertabToOpen = usertabToOpen;
 	}
+
 	public void setUserListNeedUpdate(boolean userListNeedUpdate) {
 		setChanged();
 		this.userListNeedUpdate = userListNeedUpdate;
@@ -150,22 +225,6 @@ public class Model extends Observable{
 		setChanged();
 		this.conversationNeedUpdate = conversationNeedUpdate;
 	}
-
-	//Functions
-    public int getUserListSize(){
-        return userList.size();
-    }
-
-	public LinkedList<FileMsg> getNewFileTransferRequests() {
-		return newFileTransferRequests;
-	}
-
-	public Model(){
-    	userList = new Vector<>();
-		conversations = new Vector<>();
-		newFileTransferRequests = new LinkedList<>();
-		userListOpenedTab = new Vector<>();
-    }
     
     public void addUser(User u)
     {
@@ -199,33 +258,6 @@ public class Model extends Observable{
                 found = true;
 			}
 		}
-	}
-
-	public Vector<User> getUserList()
-	{
-		return userList;
-	}
-	public Vector<Vector<Msg>> getConversations()
-	{
-		return conversations;
-	}
-
-	public User findUser(InetAddress addr)
-	{
-		boolean found = false;
-		User u = null;
-		int i=0;
-
-		while(i<userList.size() && (!found))
-		{
-			if (userList.elementAt(i).getAddr().equals(addr))
-			{
-				u = userList.elementAt(i);
-				found = true;
-			}
-			i++;
-		}
-		return u;
 	}
 
 	public void addFileTransferRequest(FileMsg fileMsg)

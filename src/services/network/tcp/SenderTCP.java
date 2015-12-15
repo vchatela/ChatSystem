@@ -11,23 +11,23 @@ import java.util.HashMap;
  * Created by ValentinC on 22/10/2015.
  */
 public class SenderTCP extends Thread{
-    //Static attributes
-    public static enum State {waiting_for_file, waiting_for_accept, sending_file, file_transferred, file_refused, error};
+    public enum State {waiting_for_file, waiting_for_accept, sending_file, file_transferred, file_refused, error}
     private static final int BUFFER_SIZE = 4096;
-    private static HashMap<Integer,SenderTCP> instances = new HashMap<>();
-
 
     //Attributes
-    private Socket clientSocket;
+        //Multiton
+        private static HashMap<Integer,SenderTCP> instances = new HashMap<>();
+        private Socket clientSocket;
     private long fileLength=0;
     private volatile long bytesSent=0;
-
-
     private State state = State.waiting_for_file;
-    DataInputStream input;
-    DataOutputStream output;
-    File file;
+    private DataInputStream input;
+    private DataOutputStream output;
+    private File file;
 
+    //Methods
+
+    //Multiton
     private SenderTCP(int key) {
         System.out.println("New FileSenderTCP, hashcode: " + key);
         instances.put(key,this);
@@ -41,6 +41,16 @@ public class SenderTCP extends Thread{
         return instance;
     }
 
+    //Thread
+    public void run(){
+        waitFile();
+        waitAccept();
+        if (state==State.sending_file)
+            send();
+        close();
+    }
+
+    //Public methods
     public void sendFile(File f, InetAddress addr){
         if (state != State.waiting_for_file)
             System.out.println("SenderTCP : File already given");
@@ -67,14 +77,7 @@ public class SenderTCP extends Thread{
 
     }
 
-    public void run(){
-        waitFile();
-        waitAccept();
-        if (state==State.sending_file)
-            send();
-        close();
-    }
-
+    //Private methods
     private void waitFile()
     {
         while (state == State.waiting_for_file)
@@ -146,19 +149,17 @@ public class SenderTCP extends Thread{
         }
     }
 
+    //Getters
     public long getFileLength() {
         return fileLength;
     }
-
     public long getBytesSent() {
         return bytesSent;
     }
-
     public String getFileName()
     {
         return  file.getName();
     }
-
     public State getFileState() {
         return state;
     }

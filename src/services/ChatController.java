@@ -51,10 +51,8 @@ public class ChatController {
 
     public void sendText(String text, User receiver){
         //Sending the message
-        if(!getLocalUser().getNickname().equals(receiver.getNickname())) {
-            System.out.println("[UDP] - Sending \"" + (text + "\" to user : " + receiver.getNickname()));
-            ChatNetwork.getInstance().sendString(text, receiver.getAddr());
-        }
+        System.out.println("[UDP] - Sending \"" + (text + "\" to user : " + receiver.getNickname()));
+        ChatNetwork.getInstance().sendString(text, receiver.getAddr());
 
         //Updating the model
         int index = model.getUserList().indexOf(receiver);
@@ -145,8 +143,20 @@ public class ChatController {
     			System.out.println("[UDP] - New message : "+m.getData());
                 Model.User user = model.findUser(addr);
 
-                int index = model.getUserList().indexOf(user);
+                //User not found
+                if (user == null)
+                {
+                    System.out.println("[ChatController] - New message from an unknown user");
+                    user = new User("Unknown @" + addr.getHostName(), addr);
+                    model.addUser(user);
+                    try {
+                        ChatNetwork.getInstance().sendHello(localUser.getNickname());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
+                int index = model.getUserList().indexOf(user);
                 Vector<Model.Msg> conversation = model.getConversations().elementAt(index);
 
                 Model.TextMsg t = new Model.TextMsg(m.getData(), user);
