@@ -16,7 +16,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
 
     //Attributes
     private User remoteUser;
-    private JTextArea conversation;
+    private JEditorPane conversation;
     private JTextField message;
     private JButton jSend;
     private JButton jSendFile;
@@ -32,11 +32,11 @@ public class ConversationComponent extends JComponent implements ActionListener,
 
         setLayout(new BorderLayout());
 
-        conversation = new JTextArea();
+        conversation = new JEditorPane();
         conversation.setEditable(false);
         DefaultCaret caret = (DefaultCaret) conversation.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        conversation.setLineWrap(true);
+        //conversation.setLineWrap(true);
         //random font ...
         conversation.setFont(Font.getFont("Calibri"));
 
@@ -134,7 +134,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
             changeFontRandom();
             message.setText("");
             return;
-        } if (message.getText().equals("Lucas")){
+        } if (message.getText().equals("")){
 
         }
         else
