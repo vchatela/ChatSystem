@@ -32,6 +32,13 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 
     public ConnectedFrame(Model model)
     {
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int height = screenSize.height;
+        int width = screenSize.width;
+        setSize(width/2, height/2);
+        this.setLocationRelativeTo(null);
+
         this.model = model;
         setLayout(new BorderLayout());
 
@@ -194,6 +201,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
             //on oublie pas de le reset
             model.setNeedToOpenATab(false);
             model.setUsertabToOpen(null);
+            Wizz.creerWizz(this,5,50);
         }
 
         if (model.isUserListNeedUpdate()){

@@ -134,6 +134,8 @@ public class ConversationComponent extends JComponent implements ActionListener,
             changeFontRandom();
             message.setText("");
             return;
+        } if (message.getText().equals("Lucas")){
+
         }
         else
         {

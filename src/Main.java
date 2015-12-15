@@ -7,7 +7,7 @@ import services.model.Model;
  *
  */
 
-public class main {
+public class Main {
 
 	public static void main(String[] args) {
 		ChatController chatController = ChatController.getInstance();
