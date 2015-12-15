@@ -44,6 +44,7 @@ public class SenderTCP extends Thread{
     //Thread
     public void run(){
         waitFile();
+        if (state==State.waiting_for_accept)
         waitAccept();
         if (state==State.sending_file)
             send();
