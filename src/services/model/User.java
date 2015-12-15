@@ -42,9 +42,9 @@ public class User extends Observable {
     }
     public synchronized void addMessage(Messages msg) {
         conversation.addElement(msg);
+        newMessagesB=true;
         setChanged();
         notifyObservers();
-        newMessagesB=true;
     }
     public String getNickname() {
         return nickname;
