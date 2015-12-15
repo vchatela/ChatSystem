@@ -182,7 +182,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
         panel1 = new ConversationComponent(model, user);
         panel1.setSize(500, 500);
         model.getUserListOpenedTab().add(user);
-        model.isConversationNeedUpdate();
+        model.setConversationNeedUpdate(true);
         tabbedPane.addTab(user.getNickname(), null, panel1);
     }
 
@@ -193,6 +193,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
             Model.User user = model.getUsertabToOpen();
             createNewTab(user);
             //on oublie pas de le reset
+            model.setNeedToOpenATab(false);
             model.setUsertabToOpen(null);
         }
 

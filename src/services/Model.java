@@ -73,6 +73,7 @@ public class Model extends Observable{
 				header = new String( ChatController.getInstance().getLocalUser().getNickname()+ ": " + System.lineSeparator());
 			else
 				header = new String(getSender().getNickname() + ": " + System.lineSeparator());
+
 			return header;
 		}
 
@@ -157,11 +158,11 @@ public class Model extends Observable{
 		return newFileTransferRequests;
 	}
 
-	public Vector<User> getUserListOpenedTab() {
+	public synchronized Vector<User> getUserListOpenedTab() {
 		return userListOpenedTab;
 	}
 
-	public User getUsertabToOpen() {
+	public synchronized User getUsertabToOpen() {
 		return usertabToOpen;
 	}
 
@@ -226,7 +227,7 @@ public class Model extends Observable{
 		this.conversationNeedUpdate = conversationNeedUpdate;
 	}
     
-    public void addUser(User u)
+    public synchronized void addUser(User u)
     {
 		setChanged();
 		//Is the user already in the list ?
@@ -246,7 +247,7 @@ public class Model extends Observable{
 		}
     }
 
-	public void remoteUserDisconnect(InetAddress addr)
+	public synchronized void remoteUserDisconnect(InetAddress addr)
 	{
 		setChanged();
 		int i = 0;
@@ -260,7 +261,7 @@ public class Model extends Observable{
 		}
 	}
 
-	public void addFileTransferRequest(FileMsg fileMsg)
+	public synchronized void addFileTransferRequest(FileMsg fileMsg)
 	{
 		setChanged();
 		newFileTransferRequests.add(fileMsg);

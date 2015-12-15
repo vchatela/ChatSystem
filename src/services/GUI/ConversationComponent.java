@@ -148,10 +148,6 @@ public class ConversationComponent extends JComponent implements ActionListener,
         }
     }
 
-    public void disableTextMessage(){
-        message.setEditable(false);
-    }
-
     @Override
     public void update(Observable o, Object arg) {
         if (model.isConversationNeedUpdate()) {
