@@ -32,9 +32,9 @@ public class ReceiverUDP extends Thread {
     			ChatNetwork.getInstance().processUDPPacket(p);
     			
     		} catch (IOException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
-    		}
+				System.out.println("An error occured in ReceiverUDP.");
+			}
     	}
     }
 }

@@ -107,7 +107,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 		switch (e.getActionCommand())
 		{
 			case "Disconnection":
-                //TODO : manage sending file etc
                 closeProgram();
 				break;
 				
@@ -162,7 +161,6 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
 	public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (listUser.getSelectedIndex() != -1) {
-                // TODO : check if user tab already exist and open this one !
                 int index = model.getUserListOpenedTab().indexOf(listUser.getSelectedValue());
                 if(index != -1){
                     // open the tab at indexOf
@@ -174,6 +172,7 @@ public class ConnectedFrame extends JFrame implements ActionListener, WindowList
                     createNewTab(listUser.getSelectedValue());
                     index = model.getUserListOpenedTab().indexOf(listUser.getSelectedValue());
                     tabbedPane.setSelectedIndex(index);
+                    model.notifyObservers();
                 }
             }
         }

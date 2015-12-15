@@ -1,11 +1,15 @@
 package services;
 
-import services.model.*;
+import services.model.FileMessage;
+import services.model.Model;
+import services.model.TextMessage;
+import services.model.User;
 import services.network.ChatNetwork;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by ValentinC on 21/10/2015.
@@ -86,14 +90,12 @@ public class ChatController {
         //On vérifie que l'on soit connecté
         if (!connected)
             return;
-
-        //TODO manage localhost later - if one addr == one of localhost addr
-        /*try {
+        try {
             if (addr.equals(InetAddress.getLocalHost()))
                     return;
         } catch (UnknownHostException e) {
             e.printStackTrace();
-        }*/
+        }
 
 
         switch (m.getHeader())

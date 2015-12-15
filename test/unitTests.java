@@ -32,7 +32,7 @@ public class unitTests {
         try {
             ChatNetwork.getInstance().sendHello("Lucas :)");
         } catch (IOException e) {
-            //error what TODO
+            assert false;
         }
         try {
             Thread.sleep(2000);
