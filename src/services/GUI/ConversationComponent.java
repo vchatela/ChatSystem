@@ -4,6 +4,7 @@ import services.ChatController;
 import services.model.*;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +34,8 @@ public class ConversationComponent extends JComponent implements ActionListener,
 
         conversation = new JTextArea();
         conversation.setEditable(false);
+        DefaultCaret caret = (DefaultCaret) conversation.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
@@ -91,7 +94,6 @@ public class ConversationComponent extends JComponent implements ActionListener,
             }
         }
         this.conversation.setText(s);
-
     }
     public String formatMessage(String value){
         String res ="";
