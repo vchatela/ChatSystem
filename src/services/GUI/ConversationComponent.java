@@ -1,13 +1,19 @@
 package services.GUI;
 
 import services.ChatController;
-import services.model.*;
+import services.model.FileMessage;
+import services.model.Messages;
+import services.model.TextMessage;
+import services.model.User;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -21,7 +27,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
     private JButton jSend;
     private JButton jSendFile;
     private final static int sizeCutMessage = 70;
-
+    static ImageIcon SMILE_IMG=createImage();
 
     //Other tools
     private JFileChooser fc;
@@ -39,6 +45,7 @@ public class ConversationComponent extends JComponent implements ActionListener,
         //conversation.setLineWrap(true);
         //random font ...
         conversation.setFont(Font.getFont("Calibri"));
+
 
         JScrollPane j= new JScrollPane(conversation);
         add(j,BorderLayout.CENTER);
@@ -73,8 +80,53 @@ public class ConversationComponent extends JComponent implements ActionListener,
         add(b3,BorderLayout.PAGE_END);
 
         refreshEntireConversation();
+        conversation.setEditorKit(new StyledEditorKit());
+        initListenerJEditorPane(conversation);
+
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
     }
-    
+
+    private void initListenerJEditorPane(final JEditorPane j) {
+        j.getDocument().addDocumentListener(new DocumentListener(){
+            public void insertUpdate(DocumentEvent event) {
+                final DocumentEvent e=event;
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if (e.getDocument() instanceof StyledDocument) try {
+                            StyledDocument doc = (StyledDocument) e.getDocument();
+                            int start = Utilities.getRowStart(j, Math.max(0, e.getOffset() - 1));
+                            int end = Utilities.getWordStart(j, e.getOffset() + e.getLength());
+                            String text = doc.getText(start, end - start);
+
+                            int i = text.indexOf(":)");
+                            while (i >= 0) {
+                                final SimpleAttributeSet attrs = new SimpleAttributeSet(doc.getCharacterElement(start + i).getAttributes());
+                                if (StyleConstants.getIcon(attrs) == null) {
+                                    StyleConstants.setIcon(attrs, SMILE_IMG);
+                                    doc.remove(start + i, 2);
+                                    doc.insertString(start + i, ":)", attrs);
+                                }
+                                i = text.indexOf(":)", i + 2);
+                            }
+                        } catch (BadLocationException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+            }
+            public void removeUpdate(DocumentEvent e) {
+            }
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+    }
+
     private void refreshEntireConversation()
     {
         Vector<Messages> conversation = remoteUser.getConversation();
@@ -136,6 +188,10 @@ public class ConversationComponent extends JComponent implements ActionListener,
             return;
         } if (message.getText().equals("")){
 
+        } if (message.getText().equals("Lucas")){
+            jSend.setText("Envoyer");
+            jSendFile.setText("Envoyer un fichier");
+            message.setText("");
         }
         else
         {
@@ -161,5 +217,27 @@ public class ConversationComponent extends JComponent implements ActionListener,
             jSend.setEnabled(true);
             jSendFile.setEnabled(true);
         }
+    }
+    static ImageIcon createImage() {
+        BufferedImage res=new BufferedImage(17, 17, BufferedImage.TYPE_INT_ARGB);
+        Graphics g=res.getGraphics();
+        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(Color.yellow);
+        g.fillOval(0,0,16,16);
+
+        g.setColor(Color.black);
+        g.drawOval(0,0,16,16);
+
+        g.drawLine(4,5, 6,5);
+        g.drawLine(4,6, 6,6);
+
+        g.drawLine(11,5, 9,5);
+        g.drawLine(11,6, 9,6);
+
+        g.drawLine(4,10, 8,12);
+        g.drawLine(8,12, 12,10);
+        g.dispose();
+
+        return new ImageIcon(res);
     }
 }
