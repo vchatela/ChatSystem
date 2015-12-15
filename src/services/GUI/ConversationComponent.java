@@ -67,8 +67,9 @@ public class ConversationComponent extends JComponent implements ActionListener,
         b3.add(b1,BorderLayout.CENTER);
         b3.add(b2,BorderLayout.LINE_END);
 
-
         add(b3,BorderLayout.PAGE_END);
+
+        refreshEntireConversation();
     }
     
     private void refreshEntireConversation()
